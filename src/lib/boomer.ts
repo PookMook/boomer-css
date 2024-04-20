@@ -72,7 +72,7 @@ export function css<TVariants extends Variants>(
 		}>
 		: never
 	},
-	name?: string
+	options: { name?: string }
 ): (variants: TVariants extends Record<string, unknown> ? Partial<{ [TKey in keyof TVariants]: keyof TVariants[TKey] }> : undefined) => string {
 	let cssOut = `@layer base {${styles.base ? buildCSS(styles.base, '.&') : ''}}`
 	if (styles.variants) {
@@ -93,7 +93,7 @@ export function css<TVariants extends Variants>(
 		}).join('')}}`
 
 	}
-	let className = `bmr-${name ? name : ''}${hash(cssOut)}`
+	let className = `bmr-${options.name ? options.name : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
 	console.log(cssOut)
 	if (this?.addAsset) {
@@ -113,46 +113,27 @@ export function css<TVariants extends Variants>(
 
 export function globalCSS() { }
 
-type CSSVars = {
-	colors: Record<string, string>
+type CSSThing<Thing extends string | Token> = Partial<{
+	colors: Record<string, Thing>
 	// Using sizes, uncomment if you like Spaces
 	//space: Record<string,string>
-	fontSizes: Record<string, string>
-	fonts: Record<string, string>
-	fontWeights: Record<string, string>
-	lineHeights: Record<string, string>
-	letterSpacings: Record<string, string>
-	sizes: Record<string, string>
-	borderWidths: Record<string, string>
-	borderStyles: Record<string, string>
-	radii: Record<string, string>
-	shadows: Record<string, string>
-	zIndices: Record<string, string>
-	transitions: Record<string, string>
-}
+	fontSizes: Record<string, Thing>
+	fonts: Record<string, Thing>
+	fontWeights: Record<string, Thing>
+	lineHeights: Record<string, Thing>
+	letterSpacings: Record<string, Thing>
+	sizes: Record<string, Thing>
+	borderWidths: Record<string, Thing>
+	borderStyles: Record<string, Thing>
+	radii: Record<string, Thing>
+	shadows: Record<string, Thing>
+	zIndices: Record<string, Thing>
+	transitions: Record<string, Thing>
+}>
 
-type CSSTokens = {
-	colors: Record<string, Token>
-	// Using sizes, uncomment if you like Spaces
-	//space: Record<string,Token>
-	fontSizes: Record<string, Token>
-	fonts: Record<string, Token>
-	fontWeights: Record<string, Token>
-	lineHeights: Record<string, Token>
-	letterSpacings: Record<string, Token>
-	sizes: Record<string, Token>
-	borderWidths: Record<string, Token>
-	borderStyles: Record<string, Token>
-	radii: Record<string, Token>
-	shadows: Record<string, Token>
-	zIndices: Record<string, Token>
-	transitions: Record<string, Token>
-}
-
-type Options<TQueries extends Record<string, string>> = {
+type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<string>> = {
 	'media': TQueries,
-	theme: Record<'base', Partial<CSSVars>> & Partial<Record<keyof TQueries, Partial<CSSVars>>>,
-
+	theme: Record<'base', TTheme> & Partial<Record<keyof TQueries, CSSThing<string>>>,
 }
 
 
@@ -163,12 +144,17 @@ function createToken(category: string, name: string, value: string | number) {
 		var: `var(--bmr-${category}-${name})`
 	}
 }
-export function config<TQueries extends Record<string, string>>(this: MacroContext | void, options: Options<TQueries>) {
-	const defaultTheme: Partial<CSSTokens> = {}
-	for (const category in options.theme.base) {
-		defaultTheme[(category as keyof CSSVars)] = {}
-		for (const token in options.theme.base[category]) {
-			defaultTheme[category][token] = createToken(category, token, options.theme.base[category][token])
+export function config
+	<TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
+	(this: MacroContext | void, options: Options<TQueries, TTheme>): { media: TQueries, theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> } } {
+	// Here we make Typescript lie, Make sure the end of those loops match this type forever or bad stuff happens
+	const defaultTheme = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }
+	for (const [category, tokensObject] of Object.entries(options.theme.base)) {
+		defaultTheme[(category as keyof TTheme)] = {} as any
+		for (const [tokenName, tokenValue] of Object.entries(tokensObject)) {
+			(defaultTheme[(category as keyof TTheme)] as any)[tokenName] = createToken(
+				category, tokenName, tokenValue
+			) as any
 		}
 
 	}

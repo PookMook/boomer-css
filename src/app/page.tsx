@@ -4,7 +4,7 @@ const boomer = css({
   base: {
     color: 'red'
   }
-}, 'title')
+}, { name: 'title' })
 
 export default function Home() {
   return (
