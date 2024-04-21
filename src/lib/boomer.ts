@@ -18,7 +18,7 @@ type MediaQueries = Record<string, CSSPayload>
 
 type CSSRules =
 	CSSPayload &
-	{ '@'?: MediaQueries } &
+	{ media?: MediaQueries } &
 	Partial<{
 		[selector: `${string}&${string}`]: CSSRules
 	}>
@@ -51,9 +51,9 @@ function buildCSS(styles: CSSRules, selector?: string) {
 			cssCode += `${property} {${buildCSS((value) as CSSRules)}}`
 			continue;
 		}
-		if (property === '@') {
-			for (const mediaRule in styles["@"]) {
-				cssCode += `@${mediaRule} {${buildCSS(styles["@"][mediaRule], selector)}}`
+		if (property === 'media') {
+			for (const mediaRule in styles["media"]) {
+				cssCode += `@${mediaRule} {${buildCSS(styles["media"][mediaRule], selector)}}`
 			}
 		}
 	}
@@ -137,14 +137,14 @@ type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<st
 }
 
 
-function createToken(category: string, name: string, value: string | number) {
+function createToken(this: MacroContext | void, category: string, name: string, value: string | number) {
 	return {
 		value: value.toString(),
 		token: `--bmr-${category}-${name}`,
-		var: `var(--bmr-${category}-${name})`
+		var: `var(--bmr-${category}-${name})`,
 	}
 }
-export function config
+export function createConfig
 	<TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
 	(this: MacroContext | void, options: Options<TQueries, TTheme>): { media: TQueries, theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> } } {
 	// Here we make Typescript lie, Make sure the end of those loops match this type forever or bad stuff happens
@@ -152,9 +152,11 @@ export function config
 	for (const [category, tokensObject] of Object.entries(options.theme.base)) {
 		defaultTheme[(category as keyof TTheme)] = {} as any
 		for (const [tokenName, tokenValue] of Object.entries(tokensObject)) {
-			(defaultTheme[(category as keyof TTheme)] as any)[tokenName] = createToken(
-				category, tokenName, tokenValue
-			) as any
+			(defaultTheme[(category as keyof TTheme)] as any)[tokenName] = {
+				value: tokenValue.toString(),
+				token: `--bmr-${category}-${tokenName}`,
+				variable: `--bmr-${category}-${tokenName})`
+			}
 		}
 
 	}
@@ -163,34 +165,6 @@ export function config
 	return { 'media': options.media, theme: defaultTheme }
 }
 
-
-const { media, theme } = config({
-	media: {
-		dark: "(prefers-color-scheme: dark)",
-		light: "(prefers-color-scheme: light)",
-		smallScreen: "(max-width: 499px)",
-		normalScreen: "(min-width: 500px)",
-		largeScreen: "(min-width: 1000px)",
-		withoutAnimation: "(prefers-reduced-motion)",
-		print: "(print)",
-	},
-	theme: {
-		base: {
-			colors: {
-				text: 'red'
-			}
-		},
-		print: {
-
-			colors: {
-				test: 'blue',
-				text: 'yellow'
-			}
-		}
-
-	}
-})
-console.log('theme', theme)
 export function keyframes() { }
 
 // Usefulness debatable
