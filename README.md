@@ -6,7 +6,7 @@ This library is in alpha version, lots of functionality is expected to be added 
 
 ## How to use
 
-You first need to [install @unplugin-parcel-macros](https://github.com/devongovett/unplugin-parcel-macros) and @parcel/macros as devDepencies. You can follow the instructions on how to setup your bundler configuration.
+You first need to [install unplugin-parcel-macros](https://github.com/devongovett/unplugin-parcel-macros) and @parcel/macros as devDepencies. You can follow the instructions on how to setup your bundler configuration.
 You can also use [parcel and leverage macros](https://parceljs.org/features/macros/) and not worry about anything.
 
 Whenever you import a function from `boomer.ts`, you *need* to use `import { css } from '@/src/lib/boomer.ts' with { type: 'macro' }`. If you don't, the library will thrown at runtime. 
@@ -20,13 +20,7 @@ This repo is a nextjs example. You can fork this repo and get started or inspire
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
