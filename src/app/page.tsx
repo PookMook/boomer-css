@@ -1,7 +1,7 @@
 import { css } from "@/lib/boomer" with {type: 'macro'}
 import { createConfig } from "@/lib/boomer" with {type: 'macro'}
 
-const config = createConfig({
+const { theme, media } = createConfig({
   media: {
     dark: "media screen and (prefers-color-scheme: dark)",
     light: "media screen and (prefers-color-scheme: light)",
@@ -37,7 +37,7 @@ const config = createConfig({
 
 const boomer = css({
   base: {
-    color: config.theme.colors.text,
+    color: theme.colors.text,
   }
 }, { name: 'title' })
 

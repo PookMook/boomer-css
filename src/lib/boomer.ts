@@ -111,7 +111,13 @@ export function css<TVariants extends Variants>(
 	) as ReturnType<typeof css>;
 }
 
-export function globalCSS() { }
+export function globalCSS(resets: Record<string, CSSPayload>) {
+
+	const cssOut = ''
+
+	console.log(cssOut)
+
+}
 
 type CSSThing<Thing extends string | Token> = Partial<{
 	colors: Record<string, Thing>
