@@ -29,9 +29,8 @@ type VariantValue = string
 type Variants = Record<VariantName, Record<VariantValue, CSSRules>>
 type Token = {
 	value: string, // blue
-	token: string, // var(--color-primary)
-	variable: string, // --color-primary
-	toString: () => string
+	variable: string, // var(--color-primary)
+	token: string, // --color-primary
 }
 
 function jsNameToCssName(name: string) {
@@ -40,7 +39,8 @@ function jsNameToCssName(name: string) {
 
 function buildPayload(payload: CSSPayload) {
 	return `${Object.entries(payload).map(([property, value]) => {
-		return `${jsNameToCssName(property)}: ${value};`
+		return `${jsNameToCssName(property)}: ${value && typeof value === "object" && 'variable' in value
+			? value.variable : value}`
 	}).join('\n')}`
 }
 
@@ -136,31 +136,52 @@ type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<st
 	theme: Record<'base', TTheme> & Partial<Record<keyof TQueries, CSSThing<string>>>,
 }
 
-
-function createToken(this: MacroContext | void, category: string, name: string, value: string | number) {
-	return {
-		value: value.toString(),
-		token: `--bmr-${category}-${name}`,
-		var: `var(--bmr-${category}-${name})`,
-	}
-}
 export function createConfig
 	<TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
 	(this: MacroContext | void, options: Options<TQueries, TTheme>): { media: TQueries, theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> } } {
 	// Here we make Typescript lie, Make sure the end of those loops match this type forever or bad stuff happens
 	const defaultTheme = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }
-	for (const [category, tokensObject] of Object.entries(options.theme.base)) {
-		defaultTheme[(category as keyof TTheme)] = {} as any
-		for (const [tokenName, tokenValue] of Object.entries(tokensObject)) {
-			(defaultTheme[(category as keyof TTheme)] as any)[tokenName] = {
-				value: tokenValue.toString(),
-				token: `--bmr-${category}-${tokenName}`,
-				variable: `--bmr-${category}-${tokenName})`
+
+	let cssOut = '@layer tokenMedia{'
+	let cssBaseOut = '@layer tokenBase, tokenMedia; @layer tokenBase {:root{'
+
+	for (const themeMedia in options.theme) {
+		if (themeMedia !== 'base') {
+			cssOut += `@${options.media[themeMedia]}{:root{`
+		}
+		for (const [category, tokensObject] of Object.entries(options.theme[themeMedia] as Record<string, CSSThing<string>>)) {
+			if (themeMedia === 'base') defaultTheme[(category as keyof TTheme)] = {} as any
+			for (const [tokenName, tokenValue] of Object.entries(tokensObject)) {
+				const token = `--bmr-${category}-${tokenName}`
+				const variable = `var(${token})`
+				if (themeMedia === 'base') (defaultTheme[(category as keyof TTheme)] as any)[tokenName] = {
+					value: tokenValue.toString(),
+					token,
+					variable
+				}
+				if (themeMedia === 'base') { cssBaseOut += `${token}: ${tokenValue};` }
+				else { cssOut += `${token}: ${tokenValue};` }
 			}
 		}
-
+		if (themeMedia !== 'base') {
+			cssOut += '}}'
+		}
 	}
 
+	cssOut += '}'
+
+	cssBaseOut += '}}'
+
+	console.log(cssBaseOut + cssOut)
+	if (this?.addAsset) {
+		this.addAsset({
+			type: 'css',
+			content: cssBaseOut + cssOut
+		});
+	}
+	else {
+		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
+	}
 
 	return { 'media': options.media, theme: defaultTheme }
 }
