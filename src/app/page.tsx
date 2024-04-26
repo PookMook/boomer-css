@@ -38,6 +38,16 @@ const { theme, media } = createConfig({
 const boomer = css({
   base: {
     color: theme.colors.text,
+    media: {
+      [media.normalScreen]: {
+        textDecoration: 'underline'
+      }
+    },
+    paddingBlock: '2rem',
+    "body .&": {
+      backgroundColor: 'black',
+      paddingInline: '4rem'
+    }
   }
 }, { name: 'title' })
 

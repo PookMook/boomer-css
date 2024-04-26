@@ -38,10 +38,10 @@ function jsNameToCssName(name: string) {
 }
 
 function buildPayload(payload: CSSPayload) {
-	return `${Object.entries(payload).map(([property, value]) => {
+	return `${Object.entries(payload).filter(([property]) => { return property !== 'media' && !property.includes('&') }).map(([property, value]) => {
 		return `${jsNameToCssName(property)}: ${value && typeof value === "object" && 'variable' in value
 			? value.variable : value}`
-	}).join('\n')}`
+	}).join(';')}`
 }
 
 function buildCSS(styles: CSSRules, selector?: string) {
@@ -57,7 +57,10 @@ function buildCSS(styles: CSSRules, selector?: string) {
 			}
 		}
 	}
+	console.log("cssCode", cssCode)
 	cssCode += selector ? `${selector} {${buildPayload(styles)}}` : buildPayload(styles)
+
+	console.log("cssCode2", cssCode)
 	return cssCode
 }
 export function css<TVariants extends Variants>(
