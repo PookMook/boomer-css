@@ -1,4 +1,4 @@
-import { createConfig } from '@/lib/boomer' with {type: 'macro'}
+import { createConfig, css } from '@/lib/boomer' with {type: 'macro'}
 
 export const config = createConfig({
 	media: {
@@ -33,4 +33,19 @@ export const config = createConfig({
 		}
 	}
 })
-console.log(config)
+
+export const boomer = css({
+	base: {
+		color: config.theme.colors.text,
+		media: {
+			[config.media.normalScreen]: {
+				textDecoration: 'underline'
+			}
+		},
+		paddingBlock: '2rem',
+		"body .&": {
+			backgroundColor: 'black',
+			paddingInline: '4rem'
+		}
+	},
+}, { name: 'title' })

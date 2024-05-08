@@ -189,7 +189,7 @@ export function createConfig
 		});
 	}
 	else {
-		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
+		throw new Error('You need to make sure to import createConfig function via `with {type: \'macro\'}`')
 	}
 
 	return { 'media': options.media, theme: defaultTheme }
