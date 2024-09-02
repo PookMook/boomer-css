@@ -46,21 +46,21 @@ function buildPayload(payload: CSSPayload) {
 
 function buildCSS(styles: CSSRules, selector?: string) {
 	let cssCode = ''
+
+	//console.log("cssCode", cssCode)
+	cssCode += selector ? `${selector} {${buildPayload(styles)}}` : buildPayload(styles)
 	for (const [property, value] of Object.entries(styles)) {
 		if (property.includes('&')) {
-			cssCode += `${property} {${buildCSS((value) as CSSRules)}}`
+			cssCode += `${property.replaceAll('&', selector || '&')} {${buildCSS((value) as CSSRules)}}`
 			continue;
 		}
 		if (property === 'media') {
 			for (const mediaRule in styles["media"]) {
-				cssCode += `@${mediaRule} {${buildCSS(styles["media"][mediaRule], selector)}}`
+				cssCode += `@${mediaRule} {${buildCSS(styles["media"][mediaRule]!, selector)}}`
 			}
 		}
 	}
-	console.log("cssCode", cssCode)
-	cssCode += selector ? `${selector} {${buildPayload(styles)}}` : buildPayload(styles)
-
-	console.log("cssCode2", cssCode)
+	//console.log("cssCode2", cssCode)
 	return cssCode
 }
 export function css<TVariants extends Variants>(
@@ -82,7 +82,7 @@ export function css<TVariants extends Variants>(
 		cssOut += `@layer variants {${Object.keys(styles.variants).map(
 			(variantName) => {
 				return Object.entries(styles.variants![variantName]!).map(
-					([variantValue, value]) => `.&.__${variantName}_${variantValue}{${buildCSS(value)}}`
+					([variantValue, value]) => buildCSS(value, `.&.__${variantName}_${variantValue}`)
 				).join('\n')
 			}
 		).join('\n')}}`
@@ -98,7 +98,7 @@ export function css<TVariants extends Variants>(
 	}
 	let className = `bmr-${options.name ? options.name : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
-	console.log(cssOut)
+	//console.log(cssOut)
 	if (this?.addAsset) {
 		this.addAsset({
 			type: 'css',
@@ -114,11 +114,26 @@ export function css<TVariants extends Variants>(
 	) as ReturnType<typeof css>;
 }
 
-export function globalCSS(resets: Record<string, CSSPayload>) {
+export function globalCSS(this: MacroContext | void,
+	resets: Record<string, CSSPayload>) {
+	let cssOut = '@layer reset{'
+	for(const reset in resets){
+		cssOut += `${reset} {${buildCSS(resets[reset])}}`
+	}
+	cssOut += '}'
+		
+	if (this?.addAsset) {
+		this.addAsset({
+			type: 'css',
+			content: cssOut
+		});
+	}
+	else {
+		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
+	}
 
-	const cssOut = ''
 
-	console.log(cssOut)
+	//console.log(cssOut)
 
 }
 
@@ -138,6 +153,7 @@ type CSSThing<Thing extends string | Token> = Partial<{
 	shadows: Record<string, Thing>
 	zIndices: Record<string, Thing>
 	transitions: Record<string, Thing>
+	layouts: Record<string, Thing>
 }>
 
 type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<string>> = {
@@ -152,7 +168,7 @@ export function createConfig
 	const defaultTheme = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }
 
 	let cssOut = '@layer tokenMedia{'
-	let cssBaseOut = '@layer tokenBase, tokenMedia; @layer tokenBase {:root{'
+	let cssBaseOut = '@layer tokenBase, tokenMedia, reset, base, variants, compoundVariants; @layer tokenBase {:root{'
 
 	for (const themeMedia in options.theme) {
 		if (themeMedia !== 'base') {
@@ -181,7 +197,7 @@ export function createConfig
 
 	cssBaseOut += '}}'
 
-	console.log(cssBaseOut + cssOut)
+	//console.log(cssBaseOut + cssOut)
 	if (this?.addAsset) {
 		this.addAsset({
 			type: 'css',
@@ -189,13 +205,32 @@ export function createConfig
 		});
 	}
 	else {
-		throw new Error('You need to make sure to import createConfig function via `with {type: \'macro\'}`')
+		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
 	}
 
 	return { 'media': options.media, theme: defaultTheme }
 }
 
-export function keyframes() { }
+type KeyframesProps = Record<string,CSSPayload>
+export function keyframes(this: MacroContext | void,frames: KeyframesProps, name: string): string { 
+
+    let cssOut = '@keyframes & {'
+    for (const [frame, CSSPayload] of Object.entries(frames)) {
+        cssOut += `${frame}{${buildPayload(CSSPayload)}}`
+    }
+    cssOut += '}'
+	let animationName = `bmr-${name}${hash(cssOut)}`
+	cssOut = cssOut.replaceAll('&', animationName)
+
+	if (this?.addAsset) {
+		this.addAsset({
+			type: 'css',
+			content: cssOut
+		});
+	}
+
+    return name
+}
 
 // Usefulness debatable
 export function createTheme() { }
