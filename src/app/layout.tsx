@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
+
 const hkg = localFont({
   src: "./fonts/hkg.woff",
   weight:'600',

@@ -1,9 +1,159 @@
-import { bookCSS, contentCSS, headerCSS, pageCSS, articleCSS } from "@/css/config"
-import { run } from "@/css/boomer.config";
 import { TimeRange } from "./time-range"
 import { Expertise } from "./expertise"
+import { css, v, m } from '@/libs/boomer' with {type: 'macro'}
 
+import { run } from "@/css/boomer.config";
+// Required for now to initialize the token and globalCSS
 run()
+
+const bookCSS = css({
+    base: {
+        display: 'grid',
+        gridTemplateColumns: `repeat(auto-fit, ${v('sizes.paperWidth')})`,
+        alignContent: 'center',
+        justifyContent: 'center',
+        gap: v('sizes.paperGap')
+    }
+}, { name: 'book' })
+
+const pageCSS = css({
+    base: {
+        backgroundColor: v('colors.paperBackground'),
+        height: v('sizes.paperHeight'),
+        display: 'grid',
+        outline: v('borderStyles.normal'),
+        boxShadow: `0 0px 30px -10px ${v('colors.text')}`,
+        "media": {
+            [m('media print')]: {
+                outline: 'none'
+            }
+        },
+    },
+    variants: {
+        layout: {
+            experience: {
+                gridTemplate: `
+                "...... ...... ...... ...    ...... ......" ${v('sizes.buffery')}
+                "...... header header header header buffest" auto
+                "buffer side   midL   midR    content buffest" 1fr
+                "...... ...... ...... ...    ....... ......" ${v('sizes.buffery')} /
+                ${v('sizes.bufferx')} 1fr ${v('sizes.bufferxHalf')} ${v('sizes.bufferxHalf')} 2fr ${v('sizes.bufferx')} 
+                `,
+                "&:before": {
+                    content: "''",
+                    display: 'block',
+                    backgroundColor: v('colors.sidebar'),
+                    gridArea: 'buffer/buffer/midL/midL'
+                },
+            },
+            portfolio: {
+                gridTemplate: `
+                    "...... ...... ...... ...    ...... ......" ${v('sizes.buffery')}
+                    "...... header header header header buffest" auto
+                    "buffer content   midL   midR  side buffest" 1fr
+                    "...... ...... ...... ...    ....... ......" ${v('sizes.buffery')} /
+                    ${v('sizes.bufferx')} 2fr ${v('sizes.bufferxHalf')} ${v('sizes.bufferxHalf')} 1fr ${v('sizes.bufferx')} 
+                    `,
+                "&:before": {
+                    content: "''",
+                    display: 'block',
+                    backgroundColor: v('colors.sidebar'),
+                    gridArea: 'midR/midR/buffest/buffest'
+                },
+            }
+        }
+    }
+}, { name: 'page' })
+
+
+const headerCSS = css({
+    base: {
+        color: v('colors.title'),
+        gridArea: 'header',
+        paddingBlock: v('sizes.paddingTitleY'),
+        textAlign: 'center',
+        borderBottom: v('borderStyles.normal')
+    },
+}, { name: "header" })
+
+const articleCSS = css({
+    base: {
+    },
+    variants: {
+        type: {
+            experience: {
+                display: 'grid',
+                gridTemplate: `"title title" auto
+                "place date" auto
+                "bullet bullet" auto /
+                1fr 1fr`,
+                paddingBlockEnd: v('sizes.inSectionPadding'),
+                gap: v('sizes.inArticleGap'),
+                "& > h4": {
+                    gridArea: "title"
+                },
+                "& > h5": {
+                    gridArea: "place"
+                },
+                "& > p": {
+                    gridArea: "date",
+                    justifySelf: "end"
+                },
+                "& > ul": {
+                    gridArea: "bullet"
+                },
+            },
+            education: {
+                display: 'grid',
+                gridTemplate: `"title title" auto
+                "place date" auto
+                "bullet bullet" auto /
+                1fr 1fr`,
+                paddingBlockEnd: v('sizes.inSectionPadding'),
+                gap: v('sizes.inArticleGap'),
+                "& > h4": {
+                    gridArea: "place"
+                },
+                "& > h5": {
+                    gridArea: "title"
+                },
+                "& > p": {
+                    gridArea: "date",
+                    justifySelf: "end"
+                },
+                "& > ul": {
+                    gridArea: "bullet"
+                },
+            }
+        }
+    }
+}, { name: "article" })
+
+const contentCSS = css({
+    base: {
+        height: "100%",
+        display: 'flex',
+        flexDirection: "column",
+        //justifyContent: "space-between",
+        "& > section:not(:last-child)": {
+            borderBottom: v('borderStyles.normal')
+        },
+        "& > section": {
+            paddingBlock: v('sizes.inSectionPadding')
+        }
+    },
+    variants: {
+        area: {
+            content: {
+                gridArea: 'content',
+            },
+            sidebar: {
+                gridArea: 'side',
+
+            }
+        }
+    }
+}, { name: 'content' })
 
 export default function Home() {
   return (
