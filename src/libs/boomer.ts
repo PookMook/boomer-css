@@ -1,3 +1,4 @@
+import type { media, themeTypeForV } from '@/css/boomer.config';
 import type { MacroContext } from '@parcel/macros'
 
 function hash(string: string) {
@@ -162,10 +163,22 @@ type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<st
 }
 
 export function createConfig
-	<TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
-	(this: MacroContext | void, options: Options<TQueries, TTheme>): { media: TQueries, theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> } } {
+	<const TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
+	(this: MacroContext | void, options: Options<TQueries, TTheme>): 
+	{ 
+		media: TQueries, 
+		mediaTypeForM: TQueries ,
+		theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }, 
+		themeTypeForV: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], string> } } {
 	// Here we make Typescript lie, Make sure the end of those loops match this type forever or bad stuff happens
 	const defaultTheme = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }
+
+	// Here we are just interested in the types exported to populate the v function options
+	const themeTypeForV = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], string> }
+
+	// Here we are just interested in the types exported to populate the m function options
+	const mediaTypeForM = {} as { [TCategory in keyof TQueries]: TQueries[TCategory] }
+
 
 	let cssOut = '@layer tokenMedia{'
 	let cssBaseOut = '@layer tokenBase, tokenMedia, reset, base, variants, compoundVariants; @layer tokenBase {:root{'
@@ -208,7 +221,7 @@ export function createConfig
 		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
 	}
 
-	return { 'media': options.media, theme: defaultTheme }
+	return { 'media': options.media, theme: defaultTheme, themeTypeForV, mediaTypeForM }
 }
 
 type KeyframesProps = Record<string,CSSPayload>
@@ -230,6 +243,51 @@ export function keyframes(this: MacroContext | void,frames: KeyframesProps, name
 	}
 
     return name
+}
+
+/**
+ * copied from https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts until custom implementation
+ */
+type IsAny<T> = unknown extends T
+  ? [keyof T] extends [never]
+    ? false
+    : true
+  : false;
+
+type PathImpl<T, Key extends keyof T> = Key extends string
+  ? IsAny<T[Key]> extends true
+    ? never
+    : T[Key] extends Record<string, any>
+    ?
+        | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof any[]>> &
+            string}`
+        | `${Key}.${Exclude<keyof T[Key], keyof any[]> & string}`
+    : never
+  : never;
+
+type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
+
+type Path<T> = keyof T extends string
+  ? PathImpl2<T> extends infer P
+    ? P extends string | keyof T
+      ? P
+      : keyof T
+    : keyof T
+  : never;
+
+
+
+
+
+// create the css variable
+export function v(token: Path<typeof themeTypeForV>, fallback?: string){
+	return `var(--bmr-${token.replaceAll('.', '-')}${fallback? `, ${fallback}`:''})`
+}
+
+
+
+export function m(mediaQuery:typeof media[keyof typeof media]){
+	return `@${mediaQuery}`
 }
 
 // Usefulness debatable

@@ -1,6 +1,9 @@
 import { bookCSS, contentCSS, headerCSS, pageCSS, articleCSS } from "@/css/config"
+import { run } from "@/css/boomer.config";
 import { TimeRange } from "./time-range"
 import { Expertise } from "./expertise"
+
+run()
 
 export default function Home() {
   return (
