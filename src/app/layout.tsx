@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
+import { run } from "@/css/boomer.config";
+// Required for now to initialize the token and globalCSS
+run()
 
 const hkg = localFont({
   src: "./fonts/hkg.woff",

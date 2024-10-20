@@ -2,9 +2,6 @@ import { TimeRange } from "./time-range"
 import { Expertise } from "./expertise"
 import { css, v, m } from '@/libs/boomer' with {type: 'macro'}
 
-import { run } from "@/css/boomer.config";
-// Required for now to initialize the token and globalCSS
-run()
 
 const bookCSS = css({
     base: {
