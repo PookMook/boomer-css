@@ -15,11 +15,11 @@ function hash(string: string) {
 
 type CSSValue = string | number | Token
 type CSSPayload = Partial<Record<keyof CSSStyleDeclaration, CSSValue>>
-type MediaQueries = Record<string, CSSPayload>
+type Queries = Record<string, CSSPayload>
 
 type CSSRules =
 	CSSPayload &
-	{ media?: MediaQueries } &
+	{ query?: Queries } &
 	Partial<{
 		[selector: `${string}&${string}`]: CSSRules
 	}>
@@ -55,9 +55,9 @@ function buildCSS(styles: CSSRules, selector?: string) {
 			cssCode += `${property.replaceAll('&', selector || '&')} {${buildCSS((value) as CSSRules)}}`
 			continue;
 		}
-		if (property === 'media') {
-			for (const mediaRule in styles["media"]) {
-				cssCode += `@${mediaRule} {${buildCSS(styles["media"][mediaRule]!, selector)}}`
+		if (property === 'query') {
+			for (const queryRule in styles["query"]) {
+				cssCode += `${queryRule} {${buildCSS(styles["query"][queryRule]!, selector)}}`
 			}
 		}
 	}
@@ -286,7 +286,7 @@ export function v(token: Path<typeof themeTypeForV>, fallback?: string){
 
 
 
-export function m(mediaQuery:typeof media[keyof typeof media]){
+export function q(mediaQuery:typeof media[keyof typeof media]){
 	return `@${mediaQuery}`
 }
 
