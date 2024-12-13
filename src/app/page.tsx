@@ -22,8 +22,11 @@ const pageCSS = css({
         height: v('sizes.paperHeight'),
         display: 'grid',
         outline: v('borderStyles.normal'),
-        boxShadow: `0 0px 30px -10px ${v('colors.text')}`,
+        boxShadow: `0 0px 30px -10px ${v('colors.text')}`,        
         "query": {
+            [q('dark/media (prefers-color-scheme: dark)')]: {
+              boxShadow: `none`,
+            },
             [q('print/media print')]: {
                 outline: 'none'
             }

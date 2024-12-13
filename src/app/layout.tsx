@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import '@/css/config.css'
 import '@/css/global.css'
 
+import { run } from "@/css/boomer.config";
+// Required for now to initialize the token and globalCSS
+run()
 
 const hkg = localFont({
   src: "./fonts/hkg.woff",
