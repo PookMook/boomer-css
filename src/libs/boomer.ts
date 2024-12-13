@@ -1,8 +1,12 @@
-import type { media, themeTypeForV } from '@/css/boomer.config';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import React from 'react';
+import type { queries, themeTypeForV} from '../css/boomer.config';
 import type { MacroContext } from '@parcel/macros'
+import fs from 'fs';
 
 function hash(string: string) {
-	var hash = 0,
+	let hash = 0,
 		i: number, chr: number;
 	if (string.length === 0) return hash;
 	for (i = 0; i < string.length; i++) {
@@ -10,16 +14,17 @@ function hash(string: string) {
 		hash = ((hash << 5) - hash) + chr;
 		hash |= 0; // Convert to 32bit integer
 	}
-	return hash.toString(36);
+	const hashStr = hash.toString(36);
+	return hashStr.startsWith('-') ? hashStr.slice(1) : hashStr;
 }
 
 type CSSValue = string | number | Token
 type CSSPayload = Partial<Record<keyof CSSStyleDeclaration, CSSValue>>
-type MediaQueries = Record<string, CSSPayload>
+type Queries = Record<string, CSSPayload>
 
 type CSSRules =
 	CSSPayload &
-	{ media?: MediaQueries } &
+	{ query?: Queries } &
 	Partial<{
 		[selector: `${string}&${string}`]: CSSRules
 	}>
@@ -55,9 +60,9 @@ function buildCSS(styles: CSSRules, selector?: string) {
 			cssCode += `${property.replaceAll('&', selector || '&')} {${buildCSS((value) as CSSRules)}}`
 			continue;
 		}
-		if (property === 'media') {
-			for (const mediaRule in styles["media"]) {
-				cssCode += `@${mediaRule} {${buildCSS(styles["media"][mediaRule]!, selector)}}`
+		if (property === 'query') {
+			for (const queryRule in styles["query"]) {
+				cssCode += `${queryRule} {${buildCSS(styles["query"][queryRule]!, selector)}}`
 			}
 		}
 	}
@@ -77,7 +82,7 @@ export function css<TVariants extends Variants>(
 		: never
 	},
 	options: { name?: string }
-): (variants: TVariants extends Record<string, unknown> ? Partial<{ [TKey in keyof TVariants]: keyof TVariants[TKey] }> : undefined) => string {
+): (variants?: TVariants extends Record<string, unknown> ? Partial<{ [TKey in keyof TVariants]: keyof TVariants[TKey] | (TVariants[TKey] extends { true: unknown } ? true : never) | (TVariants[TKey] extends { false: unknown } ? false : never) }> : undefined) => string {
 	let cssOut = `@layer base {${styles.base ? buildCSS(styles.base, '.&') : ''}}`
 	if (styles.variants) {
 		cssOut += `@layer variants {${Object.keys(styles.variants).map(
@@ -89,7 +94,7 @@ export function css<TVariants extends Variants>(
 		).join('\n')}}`
 	}
 	if (styles.variants && styles.compoundVariants) {
-		cssOut += `@layer compountVariants{${styles.compoundVariants.map(compound => {
+		cssOut += `@layer compoundVariants{${styles.compoundVariants.map(compound => {
 			return `${Object.entries(compound.variants).map(([key, value]) => {
 				return `.&:is(${(Array.isArray(value) ? value : [value]).map(value => `.__${key}_${value}`).join(',')
 					})`
@@ -97,7 +102,7 @@ export function css<TVariants extends Variants>(
 		}).join('')}}`
 
 	}
-	let className = `bmr-${options.name ? options.name : ''}${hash(cssOut)}`
+	const className = `${options.name ? options.name+'-' : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
 	//console.log(cssOut)
 	if (this?.addAsset) {
@@ -111,23 +116,94 @@ export function css<TVariants extends Variants>(
 	}
 
 	return new Function('variants',
-		'if(!variants)return "' + className + '" ;return `' + className + ' ${Object.entries(variants).map(([key, value]) => `__${key}_${value}`).join(" ")}`'
+		'if(!variants)return "' + className + '" ;return `' + className + ' ${Object.entries(variants).map(([key, value]) => {' +
+		'const processedValue = typeof value === "boolean" ? String(value) : value;' +
+		'return `__${key}_${processedValue}`;' +
+		'}).join(" ")}`'
 	) as ReturnType<typeof css>;
 }
+
+export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants extends Variants>(
+	this: MacroContext | void,
+	tag: TTag,
+	styles: {
+		base?: CSSRules,
+		variants?: TVariants,
+		compoundVariants?: TVariants extends Record<string, unknown>
+		? Array<{
+			variants: Partial<{ [TVariant in keyof TVariants]: keyof TVariants[TVariant] | Array<keyof TVariants[TVariant]> }>,
+			styles: CSSRules
+		}>
+		: never
+	},
+	options: { name?: string } = {}
+): React.ForwardRefExoticComponent<React.PropsWithoutRef<React.ComponentPropsWithoutRef<TTag> & 
+	(TVariants extends Record<string, unknown>
+		? Partial<{ [TKey in keyof TVariants as `$${string & TKey}`]: keyof TVariants[TKey] | (TVariants[TKey] extends { true: unknown } ? true : never)| (TVariants[TKey] extends { false: unknown } ? false : never) }>
+		: {})> & React.RefAttributes<React.ElementRef<TTag>>> {
+	let cssOut = `@layer base {${styles.base ? buildCSS(styles.base, '.&') : ''}}`
+	if (styles.variants) {
+		cssOut += `@layer variants {${Object.keys(styles.variants).map(
+			(variantName) => {
+				return Object.entries(styles.variants![variantName]!).map(
+					([variantValue, value]) => buildCSS(value, `.&.__${variantName}_${variantValue}`)
+				).join('\n')
+			}
+		).join('\n\n')}}`
+	}
+	if (styles.variants && styles.compoundVariants) {
+		cssOut += `@layer compoundVariants{${styles.compoundVariants.map(compound => {
+			return `${Object.entries(compound.variants).map(([key, value]) => {
+				return `.&:is(${(Array.isArray(value) ? value : [value]).map(value => `.__${key}_${value}`).join(',')
+					})`
+			}).join('')}{${buildCSS(compound.styles)}}`
+		}).join('')}}`
+
+	}
+	const className = `${options.name ? options.name+'-' : ''}${hash(cssOut)}`
+	cssOut = cssOut.replaceAll('&', className)
+
+	if (this?.addAsset) {
+		console.log(cssOut)
+		 this.addAsset({
+			type: 'css',
+			content: cssOut
+		});
+	} else {
+		throw new Error('You need to make sure to import styled function via `with {type: \'macro\'}`')
+	}
+
+	return new Function('props', `const {className: userClassName, ...rest} = props;
+		const variantClassNames = Object.entries(rest)
+			.filter(([key]) => key.startsWith('$'))
+			.map(([key, value]) => \`__\${key.slice(1)}_\${value}\`)
+			.join(' ');
+		const generatedClassName = '${className}' + (variantClassNames ? ' '+ variantClassNames : '') + (userClassName ? ' '+ userClassName : '');
+		const Element = React.createElement('${tag}', {
+			className: generatedClassName,
+			...rest,
+		});
+		return Element
+	`) as ReturnType<typeof styled>
+}
+
+
+
 
 export function globalCSS(this: MacroContext | void,
 	resets: Record<string, CSSPayload>) {
 	let cssOut = '@layer reset{'
 	for(const reset in resets){
-		cssOut += `${reset} {${buildCSS(resets[reset])}}`
+		cssOut += `${reset} {${buildCSS(resets[reset]!)}}`
 	}
 	cssOut += '}'
 		
 	if (this?.addAsset) {
-		this.addAsset({
+		/* this.addAsset({
 			type: 'css',
 			content: cssOut
-		});
+		}); */
+		fs.writeFileSync('src/css/global.css', cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
@@ -148,6 +224,7 @@ type CSSThing<Thing extends string | Token> = Partial<{
 	lineHeights: Record<string, Thing>
 	letterSpacings: Record<string, Thing>
 	sizes: Record<string, Thing>
+	borders: Record<string, Thing>
 	borderWidths: Record<string, Thing>
 	borderStyles: Record<string, Thing>
 	radii: Record<string, Thing>
@@ -158,7 +235,7 @@ type CSSThing<Thing extends string | Token> = Partial<{
 }>
 
 type Options<TQueries extends Record<string, string>, TTheme extends CSSThing<string>> = {
-	'media': TQueries,
+	'queries': TQueries,
 	theme: Record<'base', TTheme> & Partial<Record<keyof TQueries, CSSThing<string>>>,
 }
 
@@ -166,8 +243,8 @@ export function createConfig
 	<const TQueries extends Record<string, string>, TTheme extends CSSThing<string>>
 	(this: MacroContext | void, options: Options<TQueries, TTheme>): 
 	{ 
-		media: TQueries, 
-		mediaTypeForM: TQueries ,
+		queries: TQueries, 
+		queriesTypeForM: TQueries ,
 		theme: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], Token> }, 
 		themeTypeForV: { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], string> } } {
 	// Here we make Typescript lie, Make sure the end of those loops match this type forever or bad stuff happens
@@ -177,7 +254,7 @@ export function createConfig
 	const themeTypeForV = {} as { [TCategory in keyof TTheme]: Record<keyof TTheme[TCategory], string> }
 
 	// Here we are just interested in the types exported to populate the m function options
-	const mediaTypeForM = {} as { [TCategory in keyof TQueries]: TQueries[TCategory] }
+	const queriesTypeForM = {} as { [TCategory in keyof TQueries]: TQueries[TCategory] }
 
 
 	let cssOut = '@layer tokenMedia{'
@@ -185,7 +262,7 @@ export function createConfig
 
 	for (const themeMedia in options.theme) {
 		if (themeMedia !== 'base') {
-			cssOut += `@${options.media[themeMedia]}{:root{`
+			cssOut += `@${options.queries[themeMedia]}{:root{`
 		}
 		for (const [category, tokensObject] of Object.entries(options.theme[themeMedia] as Record<string, CSSThing<string>>)) {
 			if (themeMedia === 'base') defaultTheme[(category as keyof TTheme)] = {} as any
@@ -212,16 +289,17 @@ export function createConfig
 
 	//console.log(cssBaseOut + cssOut)
 	if (this?.addAsset) {
-		this.addAsset({
-			type: 'css',
+		/* this.addAsset({
+			type: 'txt',
 			content: cssBaseOut + cssOut
-		});
+		}) */
+		fs.writeFileSync('src/css/config.css', cssBaseOut + cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
 	}
 
-	return { 'media': options.media, theme: defaultTheme, themeTypeForV, mediaTypeForM }
+	return { 'queries': options.queries, theme: defaultTheme, themeTypeForV, queriesTypeForM }
 }
 
 type KeyframesProps = Record<string,CSSPayload>
@@ -232,7 +310,7 @@ export function keyframes(this: MacroContext | void,frames: KeyframesProps, name
         cssOut += `${frame}{${buildPayload(CSSPayload)}}`
     }
     cssOut += '}'
-	let animationName = `bmr-${name}${hash(cssOut)}`
+	const animationName = `bmr-${name}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', animationName)
 
 	if (this?.addAsset) {
@@ -242,53 +320,51 @@ export function keyframes(this: MacroContext | void,frames: KeyframesProps, name
 		});
 	}
 
-    return name
+    return animationName
 }
 
-/**
- * copied from https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts until custom implementation
- */
-type IsAny<T> = unknown extends T
-  ? [keyof T] extends [never]
-    ? false
-    : true
-  : false;
-
-type PathImpl<T, Key extends keyof T> = Key extends string
-  ? IsAny<T[Key]> extends true
-    ? never
-    : T[Key] extends Record<string, any>
-    ?
-        | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof any[]>> &
-            string}`
-        | `${Key}.${Exclude<keyof T[Key], keyof any[]> & string}`
-    : never
-  : never;
-
-type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
-
 type Path<T> = keyof T extends string
-  ? PathImpl2<T> extends infer P
-    ? P extends string | keyof T
-      ? P
-      : keyof T
-    : keyof T
+  ? {
+      [K in keyof T]: K extends string
+        ? unknown extends T[K]
+          ? never
+          : T[K] extends Record<string, any>
+            ? `${K}.${Path<T[K]>}`
+            : K
+        : never
+    }[keyof T]
   : never;
-
-
-
-
 
 // create the css variable
 export function v(token: Path<typeof themeTypeForV>, fallback?: string){
 	return `var(--bmr-${token.replaceAll('.', '-')}${fallback? `, ${fallback}`:''})`
 }
 
-
-
-export function m(mediaQuery:typeof media[keyof typeof media]){
-	return `@${mediaQuery}`
+export function q<K extends keyof typeof queries>(mediaQuery: K extends keyof typeof queries ? `${K}/${(typeof queries)[K]}` : never) {
+	return `@${mediaQuery.split('/')[1]}`
 }
 
-// Usefulness debatable
-export function createTheme() { }
+export function createTheme(this: MacroContext | void, name: string, theme: Partial<{
+  [K in keyof typeof themeTypeForV]: Partial<(typeof themeTypeForV)[K]>
+}>) {
+  let cssOut = `.${name} {`
+  
+  for (const [category, tokens] of Object.entries(theme)) {
+    for (const [tokenName, value] of Object.entries(tokens)) {
+      cssOut += `--bmr-${category}-${tokenName}: ${value};`
+    }
+  }
+  
+  cssOut += '}'
+
+  if (this?.addAsset) {
+    this.addAsset({
+      type: 'css',
+      content: cssOut
+    })
+  } else {
+    throw new Error('You need to make sure to import createTheme function via `with {type: \'macro\'}`')
+  }
+
+  return name
+}

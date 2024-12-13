@@ -1,6 +1,6 @@
 import { TimeRange } from "./time-range"
 import { Expertise } from "./expertise"
-import { css, v, m } from '@/libs/boomer' with {type: 'macro'}
+import { css, v, q } from '@/libs/boomer' with {type: 'macro'}
 
 import { run } from "@/css/boomer.config";
 // Required for now to initialize the token and globalCSS
@@ -23,8 +23,8 @@ const pageCSS = css({
         display: 'grid',
         outline: v('borderStyles.normal'),
         boxShadow: `0 0px 30px -10px ${v('colors.text')}`,
-        "media": {
-            [m('media print')]: {
+        "query": {
+            [q('print/media print')]: {
                 outline: 'none'
             }
         },

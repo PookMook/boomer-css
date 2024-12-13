@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import '@/css/config.css'
+import '@/css/global.css'
 
 
 const hkg = localFont({
   src: "./fonts/hkg.woff",
   weight:'600',
-  variable: "--font-hkg-sans",
+  variable: "--bmr-fonts-hkg",
 });
 const roboto = localFont({
   src: "./fonts/roboto.woff",
-  variable: "--font-roboto-sans",
+  variable: "--bmr-fonts-roboto",
 });
 
 
@@ -18,6 +20,7 @@ const roboto = localFont({
 export const metadata: Metadata = {
   title: "Arthur Juchereau",
   description: "Arthur Juchereau's resume, principal engineer",
+  
 };
 
 export default function RootLayout({
