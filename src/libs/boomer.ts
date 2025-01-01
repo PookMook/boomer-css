@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from 'react';
-import type { queries, themeTypeForV} from '../css/boomer.config';
+import type { queries, themeTypeForV} from '../css/theme';
 import type { MacroContext } from '@parcel/macros'
+
 import fs from 'fs';
 
 function hash(string: string) {
@@ -18,8 +19,13 @@ function hash(string: string) {
 	return hashStr.startsWith('-') ? hashStr.slice(1) : hashStr;
 }
 
+// Extra CSS declarations that are not part of the CSSStyleDeclaration interface, add to your liking
+type ExtraCSSDeclaration = 
+ | 'WebkitFontSmoothing'
+ | 'MozOsxFontSmoothing'
+
 type CSSValue = string | number | Token
-type CSSPayload = Partial<Record<keyof CSSStyleDeclaration, CSSValue>>
+type CSSPayload = Partial<Record<keyof CSSStyleDeclaration | ExtraCSSDeclaration, CSSValue>>
 type Queries = Record<string, CSSPayload>
 
 type CSSRules =
@@ -53,7 +59,6 @@ function buildPayload(payload: CSSPayload) {
 function buildCSS(styles: CSSRules, selector?: string) {
 	let cssCode = ''
 
-	//console.log("cssCode", cssCode)
 	cssCode += selector ? `${selector} {${buildPayload(styles)}}` : buildPayload(styles)
 	for (const [property, value] of Object.entries(styles)) {
 		if (property.includes('&')) {
@@ -66,7 +71,6 @@ function buildCSS(styles: CSSRules, selector?: string) {
 			}
 		}
 	}
-	//console.log("cssCode2", cssCode)
 	return cssCode
 }
 export function css<TVariants extends Variants>(
@@ -104,7 +108,6 @@ export function css<TVariants extends Variants>(
 	}
 	const className = `${options.name ? options.name+'-' : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
-	//console.log(cssOut)
 	if (this?.addAsset) {
 		this.addAsset({
 			type: 'css',
@@ -139,7 +142,10 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 	options: { name?: string } = {}
 ): React.ForwardRefExoticComponent<React.PropsWithoutRef<React.ComponentPropsWithoutRef<TTag> & 
 	(TVariants extends Record<string, unknown>
-		? Partial<{ [TKey in keyof TVariants as `$${string & TKey}`]: keyof TVariants[TKey] | (TVariants[TKey] extends { true: unknown } ? true : never)| (TVariants[TKey] extends { false: unknown } ? false : never) }>
+		? Partial<{ [TKey in keyof TVariants as `$${string & TKey}`]: keyof TVariants[TKey] 
+		| (TVariants[TKey] extends { true: unknown } ? boolean : never)
+		| (TVariants[TKey] extends { false: unknown } ? boolean : never) }
+		>
 		: {})> & React.RefAttributes<React.ElementRef<TTag>>> {
 	let cssOut = `@layer base {${styles.base ? buildCSS(styles.base, '.&') : ''}}`
 	if (styles.variants) {
@@ -164,7 +170,6 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 	cssOut = cssOut.replaceAll('&', className)
 
 	if (this?.addAsset) {
-		console.log(cssOut)
 		 this.addAsset({
 			type: 'css',
 			content: cssOut
@@ -199,19 +204,17 @@ export function globalCSS(this: MacroContext | void,
 	cssOut += '}'
 		
 	if (this?.addAsset) {
+		// If you prefer to not write the css to a file, uncomment this line
 		/* this.addAsset({
 			type: 'css',
 			content: cssOut
 		}); */
+		
 		fs.writeFileSync('src/css/global.css', cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
 	}
-
-
-	//console.log(cssOut)
-
 }
 
 type CSSThing<Thing extends string | Token> = Partial<{
@@ -287,12 +290,13 @@ export function createConfig
 
 	cssBaseOut += '}}'
 
-	//console.log(cssBaseOut + cssOut)
 	if (this?.addAsset) {
+		// If you prefer to not write the css to a file, uncomment this line
 		/* this.addAsset({
 			type: 'txt',
 			content: cssBaseOut + cssOut
-		}) */
+		}); */
+
 		fs.writeFileSync('src/css/config.css', cssBaseOut + cssOut)
 	}
 	else {

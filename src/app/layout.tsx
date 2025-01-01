@@ -1,30 +1,19 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import '@/css/config.css'
-import '@/css/global.css'
+import React from 'react'
+import type { Metadata } from 'next/types'
+import { Inter } from "next/font/google";
+import { run } from '@/css/theme';
 
-import { run } from "@/css/boomer.config";
-// Required for now to initialize the token and globalCSS
-run()
+import '@/css/global.css';
+import '@/css/config.css';
 
-const hkg = localFont({
-  src: "./fonts/hkg.woff",
-  weight:'600',
-  variable: "--bmr-fonts-hkg",
-});
-const roboto = localFont({
-  src: "./fonts/roboto.woff",
-  variable: "--bmr-fonts-roboto",
-});
-
-
-//export const runtime = 'edge'
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Arthur Juchereau",
-  description: "Arthur Juchereau's resume, principal engineer",
-  
+  title: "BoomerCSS - Zero Runtime CSS-in-TS Solution",
+  description: "A zero-runtime CSS-in-TS styling solution that generates CSS at build time using Parcel macros",
 };
+
+run()
 
 export default function RootLayout({
   children,
@@ -33,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
