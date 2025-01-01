@@ -9,18 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "next": "15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "unplugin-parcel-macros": "^0.0.3"
   },
   "devDependencies": {
-    "@parcel/macros": "^2.12.0",
-    "@types/node": "^20.12.7",
-    "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.2.25",
-    "eslint": "^8.57.0",
+    "@parcel/macros": "^2.13.3",
+    "@types/node": "^20.17.11",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.7.2"
   }
 }
