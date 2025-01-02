@@ -74,10 +74,12 @@ const examples = {
 
 // Simple CSS function for one-off styles
 const buttonClass = css({
-  padding: '0.5rem 1rem',
-  backgroundColor: v('colors.primary'),
-  color: 'white',
-  borderRadius: '0.25rem'
+  base: {
+    padding: '0.5rem 1rem',
+    backgroundColor: v('colors.primary'),
+    color: 'white',
+    borderRadius: '0.25rem'
+  }
 })
 
 // CSS function with variants
@@ -107,7 +109,7 @@ const buttonWithVariants = css({
 })
 
 // Usage:
-// <button className={buttonClass}>Click me</button>
+// <button className={buttonClass()}>Click me</button>
 // <button className={buttonWithVariants({ intent: 'primary', size: 'small' })}>Click me</button>`,
 
   styled: `import { styled, v } from '@/libs/boomer' with { type: 'macro' }
@@ -190,13 +192,13 @@ export function CodeExamples() {
             $active={activeTab === 'css'} 
             onClick={() => setActiveTab('css')}
           >
-            CSS Function
+            Generate Classes
           </Tab>
           <Tab 
             $active={activeTab === 'styled'} 
             onClick={() => setActiveTab('styled')}
           >
-            Styled Components
+            Generate Components
           </Tab>
           <Tab 
             $active={activeTab === 'theme'} 

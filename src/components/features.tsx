@@ -69,6 +69,10 @@ const features = [
     description: 'Powerful theming with support for dark mode and custom color schemes.'
   },
   {
+    title: 'Fully Yours',
+    description: 'Modify the code to your liking.'
+  },
+  {
     title: 'Framework Agnostic',
     description: 'Works with any UI framework or vanilla JavaScript.'
   }
