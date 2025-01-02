@@ -58,7 +58,8 @@ const Title = styled('h1', {
           animation: `${holographic} 28s linear infinite`,
         },
       [q('dark/media (prefers-color-scheme: dark)')]: {
-        color: v('colors.background'),
+        color: 'white',
+        fontFamily: 'var(--font-neoneon)',
         textShadow: `
             0 0 7px #3b82f6,
             0 0 10px #3b82f6,

@@ -1,12 +1,18 @@
 import React from 'react'
 import type { Metadata } from 'next/types'
-import { Inter } from "next/font/google";
+import { Inter, Neonderthaw } from "next/font/google";
 import { run } from '@/css/theme';
 
 import '@/css/global.css';
 import '@/css/config.css';
 
 const inter = Inter({ subsets: ["latin"] });
+const neoneon = Neonderthaw({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+  variable: '--font-neoneon'
+})
 
 export const metadata: Metadata = {
   title: "BoomerCSS - Zero Runtime CSS-in-TS Solution",
@@ -22,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} ${neoneon.variable}`}>{children}</body>
     </html>
   );
 }
