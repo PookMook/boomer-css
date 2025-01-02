@@ -15,7 +15,7 @@ const neoneon = Tilt_Neon({
 })
 
 
-export const Main = styled('main', {
+const Main = styled('main', {
     base: {
       minHeight: '100vh',
       backgroundColor: v('colors.background'),
