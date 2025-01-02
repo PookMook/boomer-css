@@ -208,12 +208,12 @@ export function globalCSS(this: MacroContext | void,
 		
 	if (this?.addAsset) {
 		// If you prefer to not write the css to a file, uncomment this line
-		/* this.addAsset({
+		 this.addAsset({
 			type: 'css',
 			content: cssOut
-		}); */
+		});
 		
-		fs.writeFileSync('src/css/global.css', cssOut)
+		//fs.writeFileSync('src/css/global.css', cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
@@ -295,12 +295,12 @@ export function createConfig
 
 	if (this?.addAsset) {
 		// If you prefer to not write the css to a file, uncomment this line
-		/* this.addAsset({
-			type: 'txt',
+		this.addAsset({
+			type: 'css',
 			content: cssBaseOut + cssOut
-		}); */
+		}); 
 
-		fs.writeFileSync('src/css/config.css', cssBaseOut + cssOut)
+		//fs.writeFileSync('src/css/config.css', cssBaseOut + cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
