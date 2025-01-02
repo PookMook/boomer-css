@@ -60,6 +60,7 @@ const Title = styled('h1', {
       [q('dark/media (prefers-color-scheme: dark)')]: {
         color: 'white',
         fontFamily: 'var(--font-neoneon)',
+        letterSpacing: '0.25rem',
         textShadow: `
             0 0 7px #3b82f6,
             0 0 10px #3b82f6,
@@ -85,7 +86,7 @@ const Subtitle = styled('p', {
 export function HeroSection() {
   return (
     <HeroContainer>
-      <Title>BoomerCSS</Title>
+      <Title>Boomer​CSS</Title>
       <Subtitle>
         Write type-safe CSS with themes, variants, and responsive designs - all generated at build time.
       </Subtitle>

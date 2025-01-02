@@ -1,13 +1,13 @@
 import React from 'react'
 import type { Metadata } from 'next/types'
-import { Inter, Neonderthaw } from "next/font/google";
+import { Inter, Tilt_Neon } from "next/font/google";
 import { run } from '@/css/theme';
 
 import '@/css/global.css';
 import '@/css/config.css';
 
 const inter = Inter({ subsets: ["latin"] });
-const neoneon = Neonderthaw({
+const neoneon = Tilt_Neon({
   subsets: ['latin'],
   weight: ['400'],
   display: 'swap',
