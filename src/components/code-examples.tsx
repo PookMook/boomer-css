@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import { styled, v, q } from '@/libs/boomer' with { type: 'macro' }
 
 const ExamplesSection = styled('section', {
   base: {
@@ -44,7 +44,16 @@ const TabsContainer = styled('div', {
   base: {
     display: 'flex',
     gap: '1rem',
-    marginBottom: '1rem'
+    overflowX: 'auto',
+    scrollbarWidth: 'none',
+    '&::-webkit-scrollbar': {
+      display: 'none'
+    },
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        justifyContent: 'center'
+      }
+    }
   }
 }, { name: 'TabsContainer' })
 
@@ -55,6 +64,7 @@ const Tab = styled('button', {
     backgroundColor: 'transparent',
     color: v('colors.textSecondary'),
     cursor: 'pointer',
+    whiteSpace: 'nowrap',
     '&:hover': {
       color: v('colors.primary')
     }

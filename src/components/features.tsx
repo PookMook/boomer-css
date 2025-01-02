@@ -1,10 +1,17 @@
 import * as React from 'react'
-import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import { styled, v, q } from '@/libs/boomer' with { type: 'macro' }
 
 const FeaturesSection = styled('section', {
   base: {
-    padding: '6rem 2rem',
+    padding: '6rem 1rem', // Reduced side padding for mobile
     backgroundColor: v('colors.backgroundCode'),
+    width: '100%',
+    overflowX: 'hidden', // Prevent horizontal scroll
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        padding: '6rem 2rem'
+      }
+    }
   }
 }, { name: 'FeaturesSection' })
 
@@ -12,14 +19,16 @@ const FeaturesGrid = styled('div', {
   base: {
     display: 'grid',
     gridTemplateColumns: '1fr',
-    gap: '2rem',
+    gap: '1rem', // Reduced gap for mobile
+    width: '100%',
     maxWidth: '1200px',
     margin: '0 auto',
     query: {
-      'media (min-width: 768px)': {
+      [q('tablet/media (min-width: 768px)')]: {
+        gap: '2rem',
         gridTemplateColumns: 'repeat(2, 1fr)'
       },
-      'media (min-width: 1024px)': {
+      [q('desktop/media (min-width: 1024px)')]: {
         gridTemplateColumns: 'repeat(3, 1fr)'
       }
     }
@@ -28,26 +37,43 @@ const FeaturesGrid = styled('div', {
 
 const FeatureCard = styled('div', {
   base: {
-    padding: '2rem',
+    padding: '1.5rem', // Reduced padding for mobile
     backgroundColor: v('colors.background'),
     borderRadius: '0.5rem',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        padding: '2rem'
+      }
+    }
   }
 }, { name: 'FeatureCard' })
 
 const FeatureTitle = styled('h3', {
   base: {
-    fontSize: '1.5rem',
+    fontSize: '1.25rem', // Slightly smaller for mobile
     fontWeight: 'bold',
-    marginBottom: '1rem',
-    color: v('colors.text')
+    marginBottom: '0.75rem',
+    color: v('colors.text'),
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        fontSize: '1.5rem',
+        marginBottom: '1rem'
+      }
+    }
   }
 }, { name: 'FeatureTitle' })
 
 const FeatureDescription = styled('p', {
   base: {
     color: v('colors.textSecondary'),
-    lineHeight: '1.6'
+    lineHeight: '1.6',
+    fontSize: '0.875rem', // Smaller font for mobile
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        fontSize: '1rem'
+      }
+    }
   }
 }, { name: 'FeatureDescription' })
 
