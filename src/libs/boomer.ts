@@ -181,8 +181,11 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 	return new Function('props', `const {className: userClassName, ...rest} = props;
 		const variantClassNames = Object.entries(rest)
 			.filter(([key]) => key.startsWith('$'))
-			.map(([key, value]) => \`__\${key.slice(1)}_\${value}\`)
-			.join(' ');
+			.map(([key, value]) => {
+				const variantName = \`__\${key.slice(1)}_\${value}\`
+				delete rest[key]
+				return variantName
+			}).join(' ');
 		const generatedClassName = '${className}' + (variantClassNames ? ' '+ variantClassNames : '') + (userClassName ? ' '+ userClassName : '');
 		const Element = React.createElement('${tag}', {
 			className: generatedClassName,

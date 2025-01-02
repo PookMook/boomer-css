@@ -69,7 +69,10 @@ const Title = styled('h1', {
             0 0 82px #8b5cf6,
             0 0 92px #8b5cf6`,
         animation: `${flicker} 1.5s infinite alternate`
-      }
+      },
+      [q('noAnimation/prefers-reduced-motion: reduce')]: {
+        animation: 'none'
+    },
     },
   }
 }, { name: 'Title' })

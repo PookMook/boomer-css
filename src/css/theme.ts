@@ -3,10 +3,12 @@ import { createConfig, globalCSS, v } from '@/libs/boomer' with { type: 'macro' 
 export const { queries, theme, themeTypeForV } = createConfig({
   queries: {
     desktop: 'media (min-width: 1024px)',
-    tablet: 'media (min-width: 768px)',
+    tablet: 'media (min-width: 768px)', 
     mobile: 'media (max-width: 767px)',
     dark: 'media (prefers-color-scheme: dark)',
     light: 'media (prefers-color-scheme: light)',
+    print: 'print',
+    noAnimation: 'prefers-reduced-motion: reduce',
   },
   theme: {
     base: {
