@@ -73,25 +73,30 @@ const MarqueeWrapper = styled('div', {
     height: '1rem',
     position: 'relative',
     overflow: 'hidden',
-    display: 'flex',
+    display: 'none',
     alignItems: 'center',
     "&::before, &::after": {
-      zIndex: 2,
-      width: '31ch',
-      height: '100%',
-      content: '""',
-      position: 'absolute',
-      left: '0',
-    },
-    "&::after": {
-      left: 'auto',
-      right: '0',
-      background: `linear-gradient(to left, ${v('colors.background')}, transparent)`
-    },
-    "&::before": {
-      background: `linear-gradient(to right, ${v('colors.background')}, transparent)`
-    }
-  }
+        zIndex: 2,
+        width: '15ch',
+        height: '100%',
+        content: '""',
+        position: 'absolute',
+        left: '0',
+      },
+      "&::after": {
+                left: 'auto',
+                right: '0',
+                background: `linear-gradient(to left, ${v('colors.background')}, transparent)`
+              },
+              "&::before": {
+                background: `linear-gradient(to right, ${v('colors.background')}, transparent)`
+              },
+    query:{
+        [q('tablet/media (min-width: 768px)')]: {
+            display: 'flex'
+        }
+      }
+  },
 }, { name: 'MarqueeWrapper' })
 
 const MenuButton = styled('button', {
