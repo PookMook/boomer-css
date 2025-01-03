@@ -1,16 +1,330 @@
 import React from 'react'
+import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+
+const Container = styled('main', {
+  base: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '2rem 1rem',
+  }
+}, { name: 'Container' })
+
+const Title = styled('h1', {
+  base: {
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    marginBottom: '2rem',
+    color: v('colors.text')
+  }
+}, { name: 'Title' })
+
+const Section = styled('section', {
+  base: {
+    maxWidth: '800px',
+    '& h2': {
+      fontSize: '1.75rem',
+      fontWeight: 'bold',
+      marginTop: '3rem',
+      marginBottom: '1rem',
+      color: v('colors.text')
+    },
+    '& h3': {
+      fontSize: '1.25rem',
+      fontWeight: 'bold',
+      marginTop: '2rem',
+      marginBottom: '0.75rem',
+      color: v('colors.text')
+    },
+    '& p': {
+      marginBottom: '1rem',
+      color: v('colors.textSecondary'),
+      lineHeight: 1.7
+    }
+  }
+}, { name: 'Section' })
+
+const CodeBlock = styled('pre', {
+  base: {
+    padding: '1.5rem',
+    borderRadius: '0.5rem',
+    backgroundColor: v('colors.backgroundCode'),
+    color: v('colors.textCode'),
+    overflow: 'auto',
+    fontSize: '0.875rem',
+    lineHeight: '1.7',
+    margin: '1rem 0'
+  }
+}, { name: 'CodeBlock' })
 
 export default function DocumentationPage() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-6">Documentation</h1>
-      <section className="prose prose-lg max-w-none">
-        <h2>Components</h2>
-        <p>Component documentation will go here...</p>
+    <Container>
+      <Title>Documentation</Title>
+      <Section>
+        <h2>Core Concepts</h2>
+        <p>
+          boomerCSS is a zero-runtime CSS-in-TS solution that generates all styles at build time using Parcel macros. 
+          It provides a type-safe way to write CSS with support for themes, variants, and responsive designs.
+        </p>
+
+
+        <h2>Best Practices</h2>
+        <ul>
+          <li>Always import functions with the macro type declaration</li>
+          <li>Use semantic names for variants and theme values</li>
+          <li>Leverage the theme system for consistent styling</li>
+          <li>Use the css function for reusable styles across different components</li>
+          <li>Use the styled function when you need a styled React component</li>
+        </ul>
+
+        <h2>The css Function</h2>
+        <p>
+          The <code>css</code> function is the core building block of boomerCSS. It generates class names for your styles at build time.
+        </p>
+
+        <h3>Basic Usage</h3>
+        <CodeBlock>
+          <code>{`import { css } from '@/libs/boomer' with { type: 'macro' }
+
+const buttonClass = css({
+  base: {
+    padding: '0.5rem 1rem',
+    backgroundColor: 'blue',
+    color: 'white',
+    borderRadius: '0.25rem'
+  }
+})
+
+// Usage:
+// <button className={buttonClass()}>Click me</button>`}</code>
+        </CodeBlock>
+
+        <h3>With Variants</h3>
+        <CodeBlock>
+          <code>{`const buttonWithVariants = css({
+  base: {
+    padding: '0.5rem 1rem',
+    borderRadius: '0.25rem'
+  },
+  variants: {
+    intent: {
+      primary: {
+        backgroundColor: v('colors.primary'),
+        color: 'white'
+      },
+      secondary: {
+        backgroundColor: 'transparent',
+        border: \`1px solid \${v('colors.primary')}\`,
+        color: v('colors.primary')
+      }
+    },
+    size: {
+      small: { fontSize: '0.875rem' },
+      large: { fontSize: '1.125rem' }
+    }
+  }
+})
+
+// Usage:
+// <button className={buttonWithVariants({ intent: 'primary', size: 'small' })}>
+//   Click me
+// </button>`}</code>
+        </CodeBlock>
+
+        <h3>With Media Queries</h3>
+        <CodeBlock>
+          <code>{`const responsiveBox = css({
+  base: {
+    padding: '1rem',
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        padding: '2rem'
+      },
+      [q('desktop/media (min-width: 1024px)')]: {
+        padding: '3rem'
+      }
+    }
+  }
+})`}</code>
+        </CodeBlock>
+
         
-        <h2>Utilities</h2>
-        <p>Utility documentation will go here...</p>
-      </section>
-    </main>
+
+        <h2>The styled Function</h2>
+        <p>
+          The <code>styled</code> function creates React components with built-in styles. It's similar to the css function but returns a component instead of a class name.
+        </p>
+
+        <CodeBlock>
+          <code>{`const Button = styled('button', {
+  base: {
+    padding: '0.5rem 1rem',
+    borderRadius: '0.25rem',
+    backgroundColor: v('colors.primary'),
+    color: 'white'
+  },
+  variants: {
+    size: {
+      small: { fontSize: '0.875rem' },
+      large: { fontSize: '1.125rem' }
+    }
+  }
+})
+
+// Usage:
+// <Button $size="small">Click me</Button>`}</code>
+        </CodeBlock>
+
+        <h2>Naming Styles</h2>
+        <p>
+          Both <code>css</code> and <code>styled</code> functions accept an optional name parameter that helps with debugging and DevTools identification.
+        </p>
+        <CodeBlock>
+          <code>{`const buttonClass = css({
+  base: {
+    padding: '0.5rem 1rem',
+    backgroundColor: v('colors.primary'),
+    color: 'white'
+  }
+}, { name: 'Button' }) // This name will appear in the generated class
+
+const StyledButton = styled('button', {
+  base: {
+    padding: '0.5rem 1rem',
+    backgroundColor: v('colors.primary'),
+    color: 'white'
+  }
+}, { name: 'StyledButton' }) // This name will appear in the DOM`}</code>
+        </CodeBlock>
+
+        <h2>Animations with keyframes</h2>
+        <p>
+          Use the <code>keyframes</code> function to create CSS animations. Like other boomerCSS functions, it generates the CSS at build time.
+        </p>
+
+        <CodeBlock>
+          <code>{`import { keyframes, styled } from '@/libs/boomer' with { type: 'macro' }
+
+const fadeIn = keyframes({
+  '0%': {
+    opacity: 0
+  },
+  '100%': {
+    opacity: 1
+  }
+}, 'fadeIn') // Optional name for the animation, if set it will be used in the generated CSS as is. So you can reference it in other files by name.
+
+const FadeInDiv = styled('div', {
+  base: {
+    animation: \`\${fadeIn} 0.3s ease-in\`,
+    query: {
+      [q('noAnimation/prefers-reduced-motion: reduce')]: {
+        animation: 'none'
+      }
+    }
+  }
+})
+
+// More complex example
+const flicker = keyframes({
+  '0%, 18%, 22%, 25%, 53%, 57%, 100%': {
+    textShadow: \`
+      0 0 7px #3b82f6,
+      0 0 10px #3b82f6,
+      0 0 21px #3b82f6,
+      0 0 42px #8b5cf6,
+      0 0 82px #8b5cf6
+    \`
+  },
+  '20%, 24%, 55%': {
+    textShadow: 'none'
+  }
+}, 'flicker')
+
+const NeonText = styled('span', {
+  base: {
+    color: 'white',
+    animation: \`\${flicker} 1.5s infinite alternate\`
+  }
+})`}</code>
+        </CodeBlock>
+
+        <h2>Theme Configuration</h2>
+        <p>
+          Themes are configured using the <code>createConfig</code> function. This sets up your design tokens and media queries.
+        </p>
+
+        <CodeBlock>
+          <code>{`import { createConfig } from '@/libs/boomer' with { type: 'macro' }
+
+export const { queries, themeTypeForV } = createConfig({
+  queries: {
+    desktop: 'media (min-width: 1024px)',
+    tablet: 'media (min-width: 768px)',
+    dark: 'media (prefers-color-scheme: dark)'
+  },
+  theme: {
+    base: {
+      colors: {
+        primary: '#3b82f6',
+        text: '#1a1a1a'
+      },
+      spacing: {
+        sm: '0.5rem',
+        md: '1rem'
+      }
+    },
+    dark: {
+      colors: {
+        text: '#ffffff'
+      }
+    }
+  }
+})`}</code>
+        </CodeBlock>
+
+        <h2>Using Theme Values</h2>
+        <p>
+          The <code>v()</code> function accesses theme values, while <code>q()</code> accesses media queries.
+        </p>
+        <p>While it's not required, it's recommended to use <code>v()</code> and <code>q()</code> functions to access theme values and media queries. Those are statically typed and will be checked at build time for missing declaration.</p>
+
+        <CodeBlock>
+          <code>{`// Using theme values
+const Box = styled('div', {
+  base: {
+    color: v('colors.text'),
+    padding: v('spacing.md'),
+    query: {
+      [q('dark/media (prefers-color-scheme: dark)')]: {
+        backgroundColor: '#000'
+      }
+    }
+  }
+})`}</code>
+        </CodeBlock>
+
+        <h2>Global Styles</h2>
+        <p>
+          Use <code>globalCSS</code> to define global styles for your application.
+        </p>
+
+        <CodeBlock>
+          <code>{`globalCSS({
+  '*': {
+    margin: 0,
+    padding: 0,
+    boxSizing: 'border-box'
+  },
+  'body': {
+    backgroundColor: v('colors.background'),
+    color: v('colors.text'),
+    fontFamily: 'system-ui'
+  }
+})`}</code>
+        </CodeBlock>
+
+      </Section>
+    </Container>
   )
 } 
