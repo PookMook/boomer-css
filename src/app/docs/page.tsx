@@ -1,5 +1,6 @@
 import React from 'react'
 import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
 
 const Container = styled('main', {
   base: {
@@ -61,6 +62,8 @@ export default function DocumentationPage() {
     <Container>
       <Title>Documentation</Title>
       <Section>
+        <AlphaDisclaimer />
+        
         <h2>Core Concepts</h2>
         <p>
           boomerCSS is a zero-runtime CSS-in-TS solution that generates all styles at build time using Parcel macros. 
