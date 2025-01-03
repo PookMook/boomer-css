@@ -5,7 +5,7 @@ export const Container = styled('div', {
   base: {
     gridColumn: '2 / 3',
     maxWidth: '100vw',
-    paddingBlock: '2rem'
+    paddingBlock: v('spacing.lg')
   },
   variants: {
     spread: {
@@ -15,10 +15,10 @@ export const Container = styled('div', {
     },
     padding: {
         hero: {
-            paddingBlock: '6rem'
+            paddingBlock: v('spacing.2xl')
         },
         section: {
-            padding: '2rem'
+            padding: v('spacing.lg')
         },
       none: {
         paddingBlock: '0'
