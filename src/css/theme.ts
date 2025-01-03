@@ -36,6 +36,7 @@ export const { queries, themeTypeForV } = createConfig({
         '2xl': '96px',
       },
       fontSizes: {
+        defaultFontSize: '75%',
         xs: '0.875rem',
         sm: '1rem',
         md: '1.125rem',
@@ -82,7 +83,18 @@ export const { queries, themeTypeForV } = createConfig({
         sm: '0 2px 10px rgba(0, 0, 0, 0.2)',
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
       }
-    }
+    },
+    desktop:{
+      fontSizes: {
+        defaultFontSize: '100%',
+      },
+    },
+    tablet:{
+      fontSizes: {
+        defaultFontSize: '90%',
+      },
+    },
+    print:{},
   }
 }) 
 
@@ -104,6 +116,9 @@ globalCSS({
     fontFamily: 'Inter, sans-serif',
     color: v('colors.text'),
     overflowY: 'scroll',
+  },
+  html:{
+    fontSize: v('fontSizes.defaultFontSize'),
   },
   'img, picture, video, canvas, svg': {
     display: 'block',
