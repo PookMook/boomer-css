@@ -4,8 +4,8 @@ import { createConfig, globalCSS, q, styled, v } from '@/libs/boomer' with { typ
 export const { queries, themeTypeForV } = createConfig({
   queries: {
     large: 'media (min-width: 1200px)',
-    desktop: 'media (min-width: 1024px)',
-    tablet: 'media (min-width: 768px)', 
+    desktop: 'media (min-width: 1024px)', 
+    tablet: 'media (min-width: 768px)',
     mobile: 'media (max-width: 767px)',
     dark: 'media (prefers-color-scheme: dark)',
     light: 'media (prefers-color-scheme: light)',
@@ -28,10 +28,42 @@ export const { queries, themeTypeForV } = createConfig({
         alertText: '#991b1b'
       },
       spacing: {
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '2rem',
-        xl: '4rem'
+        xs: '4px',
+        sm: '8px',
+        md: '16px',
+        lg: '32px',
+        xl: '64px',
+        '2xl': '96px',
+      },
+      fontSizes: {
+        xs: '0.875rem',
+        sm: '1rem',
+        md: '1.125rem',
+        lg: '1.5rem',
+        xl: '2.5rem',
+        '2xl': '3.5rem',
+      },
+      lineHeights: {
+        tight: '1.2',
+        base: '1.5',
+        relaxed: '1.6',
+        loose: '1.7',
+      },
+      radii: {
+        sm: '4px',
+        md: '8px',
+      },
+      shadows: {
+        sm: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      },
+      grids: {
+        main: 'auto 800px auto',
+        mobile: 'auto 1fr auto',
+      },
+      gaps: {
+        sm: '16px',
+        md: '32px',
       }
     },
     dark: {
@@ -45,6 +77,10 @@ export const { queries, themeTypeForV } = createConfig({
         alertBackground: '#451a1a',
         alertBorder: '#991b1b',
         alertText: '#fecaca'
+      },
+      shadows: {
+        sm: '0 2px 10px rgba(0, 0, 0, 0.2)',
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
       }
     }
   }

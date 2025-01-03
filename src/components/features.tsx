@@ -5,10 +5,10 @@ import { Title, Text } from '@/css/typography'
 
 const FeatureCard = styled('div', {
   base: {
-    padding: '2rem',
+    padding: v('spacing.lg'),
     backgroundColor: v('colors.background'),
-    borderRadius: '0.5rem',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+    borderRadius: v('radii.md'),
+    boxShadow: v('shadows.md')
   }
 }, { name: 'FeatureCard' })
 
