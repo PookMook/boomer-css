@@ -1,5 +1,6 @@
 import React from 'react'
 import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
 
 const Container = styled('main', {
   base: {
@@ -49,40 +50,12 @@ const CodeBlock = styled('pre', {
   }
 }, { name: 'CodeBlock' })
 
-const Alert = styled('div', {
-  base: {
-    padding: '1rem',
-    borderRadius: '0.5rem',
-    backgroundColor: v('colors.alertBackground'),
-    border: `1px solid ${v('colors.alertBorder')}`,
-    color: v('colors.alertText'),
-    marginBottom: '2rem',
-    '& ul': {
-      marginLeft: '1.5rem',
-      marginTop: v('spacing.sm')
-    },
-    '& p': {
-      marginTop: v('spacing.sm')
-    }
-  }
-}, { name: 'Alert' })
-
 export default function GettingStartedPage() {
   return (
     <Container>
       <Title>Getting Started with BoomerCSS</Title>
       <Section>
-        <Alert>
-          <strong>⚠️ Alpha Version Notice:</strong>
-          <p>BoomerCSS is currently in alpha stage and has some important limitations:</p>
-          <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
-            <li>Not compatible with Turbopack - please use webpack for nextjs or other supported bundlers</li>
-            <li>Macro functions cannot be used across files - theme, animation, and query values must be defined in the same file as css/styled functions</li>
-            <li>API may change without notice</li>
-            <li>Some features are still experimental</li>
-          </ul>
-          <p style={{ marginTop: '0.5rem' }}>Use with caution in production environments.</p>
-        </Alert>
+        <AlphaDisclaimer />
 
         <h2>Prerequisites</h2>
         <p>If you're using Parcel as your bundler, macros will work out of the box. For other bundlers, follow the configuration instructions in the unplugin-parcel-macros documentation.</p>
