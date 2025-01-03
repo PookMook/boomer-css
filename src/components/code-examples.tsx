@@ -2,20 +2,8 @@
 
 import * as React from 'react'
 import { styled, v, q } from '@/libs/boomer' with { type: 'macro' }
-
-const ExamplesSection = styled('section', {
-  base: {
-    padding: '6rem 2rem',
-    backgroundColor: v('colors.background')
-  }
-}, { name: 'ExamplesSection' })
-
-const Container = styled('div', {
-  base: {
-    maxWidth: '1200px',
-    margin: '0 auto'
-  }
-}, { name: 'Container' })
+import { CodeBlock } from '@/css/code'
+import { Container } from '@/css/layout'
 
 const SectionTitle = styled('h2', {
   base: {
@@ -26,19 +14,6 @@ const SectionTitle = styled('h2', {
     color: v('colors.text')
   }
 }, { name: 'SectionTitle' })
-
-const CodeBlock = styled('pre', {
-  base: {
-    padding: '1.5rem',
-    borderRadius: '0.5rem',
-    backgroundColor: v('colors.backgroundCode'),
-    color: v('colors.textCode'),
-    overflow: 'auto',
-    fontSize: '0.875rem',
-    lineHeight: '1.7',
-    margin: '2rem 0'
-  }
-}, { name: 'CodeBlock' })
 
 const TabsContainer = styled('div', {
   base: {
@@ -199,8 +174,8 @@ import '@/css/config.css';
 export function CodeExamples() {
   const [activeTab, setActiveTab] = React.useState<keyof typeof examples>('css')
 
+
   return (
-    <ExamplesSection>
       <Container>
         <SectionTitle>Write blazingly fast type-safe styles with ease</SectionTitle>
         <TabsContainer>
@@ -227,6 +202,5 @@ export function CodeExamples() {
           <code>{examples[activeTab]}</code>
         </CodeBlock>
       </Container>
-    </ExamplesSection>
   )
 } 

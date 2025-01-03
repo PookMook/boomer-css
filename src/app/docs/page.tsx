@@ -1,67 +1,13 @@
 import React from 'react'
-import { styled, v } from '@/libs/boomer' with { type: 'macro' }
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
-
-const Container = styled('main', {
-  base: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem 1rem',
-  }
-}, { name: 'Container' })
-
-const Title = styled('h1', {
-  base: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    marginBottom: '2rem',
-    color: v('colors.text')
-  }
-}, { name: 'Title' })
-
-const Section = styled('section', {
-  base: {
-    maxWidth: '800px',
-    '& h2': {
-      fontSize: '1.75rem',
-      fontWeight: 'bold',
-      marginTop: '3rem',
-      marginBottom: '1rem',
-      color: v('colors.text')
-    },
-    '& h3': {
-      fontSize: '1.25rem',
-      fontWeight: 'bold',
-      marginTop: '2rem',
-      marginBottom: '0.75rem',
-      color: v('colors.text')
-    },
-    '& p': {
-      marginBottom: '1rem',
-      color: v('colors.textSecondary'),
-      lineHeight: 1.7
-    }
-  }
-}, { name: 'Section' })
-
-const CodeBlock = styled('pre', {
-  base: {
-    padding: '1.5rem',
-    borderRadius: '0.5rem',
-    backgroundColor: v('colors.backgroundCode'),
-    color: v('colors.textCode'),
-    overflow: 'auto',
-    fontSize: '0.875rem',
-    lineHeight: '1.7',
-    margin: '1rem 0'
-  }
-}, { name: 'CodeBlock' })
+import { Container} from '@/css/layout'
+import { CodeBlock } from '@/css/code'
+import { PageTitle } from '@/css/typography'
 
 export default function DocumentationPage() {
   return (
-    <Container>
-      <Title>Documentation</Title>
-      <Section>
+    <Container $typographic="true">
+      <PageTitle>Documentation</PageTitle>
         <AlphaDisclaimer />
         
         <h2>Core Concepts</h2>
@@ -326,8 +272,6 @@ const Box = styled('div', {
   }
 })`}</code>
         </CodeBlock>
-
-      </Section>
     </Container>
   )
 } 
