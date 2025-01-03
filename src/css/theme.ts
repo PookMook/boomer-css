@@ -1,6 +1,6 @@
 import { createConfig, globalCSS, v } from '@/libs/boomer' with { type: 'macro' }
 
-export const { queries, theme, themeTypeForV } = createConfig({
+export const { queries, themeTypeForV } = createConfig({
   queries: {
     desktop: 'media (min-width: 1024px)',
     tablet: 'media (min-width: 768px)', 
@@ -20,7 +20,10 @@ export const { queries, theme, themeTypeForV } = createConfig({
         secondary: '#8b5cf6',
         border: '#e5e7eb',
         backgroundCode: '#f8f9fa',
-        textCode: '#1a1a1a'
+        textCode: '#1a1a1a',
+        alertBackground: '#fef2f2',
+        alertBorder: '#fee2e2',
+        alertText: '#991b1b'
       },
       spacing: {
         sm: '0.5rem',
@@ -36,7 +39,10 @@ export const { queries, theme, themeTypeForV } = createConfig({
         textSecondary: '#94a3b8',
         border: '#1e293b',
         backgroundCode: '#1e293b',
-        textCode: '#f8fafc'
+        textCode: '#f8fafc',
+        alertBackground: '#451a1a',
+        alertBorder: '#991b1b',
+        alertText: '#fecaca'
       }
     }
   }

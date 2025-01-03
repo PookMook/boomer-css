@@ -184,10 +184,16 @@ globalCSS({
   }
 })
 
+
+// As long as the file is imported, the library will generate CSS at build time as a CSS module file.
+// The easiest way to do so is to create an empty run function that you import at the root of your project.
+export function style(){}
+
 // Usage:
-// The library will generate CSS files for you to import at the root of your project
+// If you choose so, the library will generate CSS files for you to import at the root of your project. Otherwise, you can rely on the run function to inject the CSS modules.
 import '@/css/global.css';
-import '@/css/config.css';`
+import '@/css/config.css';
+`
 }
 
 export function CodeExamples() {
