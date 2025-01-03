@@ -1,7 +1,9 @@
-import { createConfig, globalCSS, v } from '@/libs/boomer' with { type: 'macro' }
+import * as React from 'react'
+import { createConfig, globalCSS, q, styled, v } from '@/libs/boomer' with { type: 'macro' }
 
 export const { queries, themeTypeForV } = createConfig({
   queries: {
+    large: 'media (min-width: 1200px)',
     desktop: 'media (min-width: 1024px)',
     tablet: 'media (min-width: 768px)', 
     mobile: 'media (max-width: 767px)',
@@ -65,6 +67,7 @@ globalCSS({
     MozOsxFontSmoothing: 'grayscale',
     fontFamily: 'Inter, sans-serif',
     color: v('colors.text'),
+    overflowY: 'scroll',
   },
   'img, picture, video, canvas, svg': {
     display: 'block',
@@ -81,4 +84,16 @@ globalCSS({
   }
 })
 
-export function run(){}
+export const Main = styled('main', {
+    base: {
+      backgroundColor: v('colors.background'),
+      display: 'grid',
+      gridTemplateColumns: 'auto 1fr auto',
+      gridAutoRows: 'auto',
+      query: {
+        [q('desktop/media (min-width: 1024px)')]: {
+          gridTemplateColumns: 'auto 800px auto'
+        },
+      }
+    },
+  }, { name: 'Main' })

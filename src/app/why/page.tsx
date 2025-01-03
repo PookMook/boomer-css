@@ -1,46 +1,12 @@
 import React from 'react'
 import { styled, v } from '@/libs/boomer' with { type: 'macro' }
-
-const Container = styled('main', {
-  base: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem 1rem',
-  }
-}, { name: 'Container' })
-
-const Title = styled('h1', {
-  base: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    marginBottom: '2rem',
-    color: v('colors.text')
-  }
-}, { name: 'Title' })
-
-const Section = styled('section', {
-  base: {
-    maxWidth: '800px',
-    '& h2': {
-      fontSize: '1.75rem',
-      fontWeight: 'bold',
-      marginTop: '2rem',
-      marginBottom: '1rem',
-      color: v('colors.text')
-    },
-    '& p': {
-      marginBottom: '1rem',
-      color: v('colors.textSecondary'),
-      lineHeight: 1.7
-    }
-  }
-}, { name: 'Section' })
+import { Container } from '@/css/layout'
+import { PageTitle } from '@/css/typography'
 
 export default function WhyPage() {
   return (
-    <Container>
-      <Title>Why boomerCSS?</Title>
-      <Section>
+    <Container $typographic="true">
+      <PageTitle>Why boomerCSS?</PageTitle>
         <h2>Embracing the Cascade</h2>
         <p>
           boomerCSS was created to bring back the power of CSS's cascade while maintaining the benefits of modern CSS-in-JS solutions. Unlike other styling libraries that fight against the cascade, boomerCSS works with it to create more maintainable and performant stylesheets.
@@ -75,7 +41,6 @@ export default function WhyPage() {
         <p>
           By combining the power of CSS's cascade with modern development features like type safety and build-time optimization, boomerCSS offers a unique solution that's both powerful and developer-friendly. It's designed for developers who want to write maintainable, performant styles without fighting against CSS's natural behavior.
         </p>
-      </Section>
     </Container>
   )
 }

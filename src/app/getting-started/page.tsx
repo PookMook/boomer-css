@@ -1,41 +1,8 @@
 import React from 'react'
 import { styled, v } from '@/libs/boomer' with { type: 'macro' }
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
-
-const Container = styled('main', {
-  base: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem 1rem',
-  }
-}, { name: 'Container' })
-
-const Title = styled('h1', {
-  base: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    marginBottom: '2rem',
-    color: v('colors.text')
-  }
-}, { name: 'Title' })
-
-const Section = styled('section', {
-  base: {
-    maxWidth: '800px',
-    '& h2': {
-      fontSize: '1.75rem',
-      fontWeight: 'bold',
-      marginTop: '2rem',
-      marginBottom: '1rem',
-      color: v('colors.text')
-    },
-    '& p': {
-      marginBottom: '1rem',
-      color: v('colors.textSecondary'),
-      lineHeight: 1.7
-    }
-  }
-}, { name: 'Section' })
+import { Container } from '@/css/layout'
+import { PageTitle } from '@/css/typography'
 
 const CodeBlock = styled('pre', {
   base: {
@@ -52,9 +19,8 @@ const CodeBlock = styled('pre', {
 
 export default function GettingStartedPage() {
   return (
-    <Container>
-      <Title>Getting Started with BoomerCSS</Title>
-      <Section>
+    <Container $typographic="true">
+      <PageTitle>Getting Started with BoomerCSS</PageTitle>
         <AlphaDisclaimer />
 
         <h2>Prerequisites</h2>
@@ -94,8 +60,6 @@ export function run(){}`}
         <CodeBlock>
           <code>{`import { css } from '@/src/lib/boomer.ts' with { type: 'macro' }`}</code>
         </CodeBlock>
-        
-      </Section>
     </Container>
   )
 }
