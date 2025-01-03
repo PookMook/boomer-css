@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { v, styled, keyframes, q, css } from '@/libs/boomer' with { type: 'macro' }
+import Link from 'next/link'
+import { v, keyframes, q, css } from '@/libs/boomer' with { type: 'macro' }
 import * as Popover from '@radix-ui/react-popover'
 
-const NavContainer = styled('nav', {
+const NavContainer = css({
   base: {
     padding: '1rem',
     display: 'flex',
@@ -16,7 +17,7 @@ const NavContainer = styled('nav', {
   }
 }, { name: 'NavContainer' })
 
-const NavLinks = styled('div', {
+const NavLinks = css({
   base: {
     display: 'none',
     gap: '2rem',
@@ -28,23 +29,22 @@ const NavLinks = styled('div', {
   }
 }, { name: 'NavLinks' })
 
-const NavLink = styled('a', {
+const NavLink = css({
   base: {
     color: v('colors.text'),
     textDecoration: 'none',
     '&:hover': {
       color: v('colors.primary')
     },
-},
-    variants: {
-        home:{
-            true:{
-                fontSize: '1.5rem',
-                fontWeight: 'bold'
-
-            }
-        }
+  },
+  variants: {
+    home: {
+      true: {
+        fontSize: '1.5rem',
+        fontWeight: 'bold'
+      }
     }
+  }
 }, { name: 'NavLink' })
 
 const marqueeKeyframes = keyframes({
@@ -56,7 +56,7 @@ const marqueeKeyframes = keyframes({
   }
 }, 'marquee')
 
-const MarqueeText = styled('p', {
+const MarqueeText = css({
   base: {
     position: 'absolute',
     zIndex: 1,
@@ -67,7 +67,7 @@ const MarqueeText = styled('p', {
   }
 }, { name: 'MarqueeText' })
 
-const MarqueeWrapper = styled('div', {
+const MarqueeWrapper = css({
   base: {
     flex: 1,
     height: '1rem',
@@ -76,30 +76,30 @@ const MarqueeWrapper = styled('div', {
     display: 'none',
     alignItems: 'center',
     "&::before, &::after": {
-        zIndex: 2,
-        width: '15ch',
-        height: '100%',
-        content: '""',
-        position: 'absolute',
-        left: '0',
-      },
-      "&::after": {
-                left: 'auto',
-                right: '0',
-                background: `linear-gradient(to left, ${v('colors.background')}, transparent)`
-              },
-              "&::before": {
-                background: `linear-gradient(to right, ${v('colors.background')}, transparent)`
-              },
-    query:{
-        [q('tablet/media (min-width: 768px)')]: {
-            display: 'flex'
-        }
+      zIndex: 2,
+      width: '15ch',
+      height: '100%',
+      content: '""',
+      position: 'absolute',
+      left: '0',
+    },
+    "&::after": {
+      left: 'auto',
+      right: '0',
+      background: `linear-gradient(to left, ${v('colors.background')}, transparent)`
+    },
+    "&::before": {
+      background: `linear-gradient(to right, ${v('colors.background')}, transparent)`
+    },
+    query: {
+      [q('tablet/media (min-width: 768px)')]: {
+        display: 'flex'
       }
+    }
   },
 }, { name: 'MarqueeWrapper' })
 
-const MenuButton = styled('button', {
+const MenuButton = css({
   base: {
     display: 'flex',
     padding: '0.5rem',
@@ -129,32 +129,32 @@ const PopoverContent = css({
 
 export function NavBar() {
   return (
-    <NavContainer>
-      <NavLink $home="true" href="/">BoomerCSS</NavLink>
-      <MarqueeWrapper>
-        <MarqueeText>Zero Runtime CSS-in-TS Solution</MarqueeText>
-      </MarqueeWrapper>
-      <NavLinks>
-        <NavLink href="/why">Why</NavLink>
-        <NavLink href="/getting-started">Getting Started</NavLink>
-        <NavLink href="/docs">Documentation</NavLink>
-        <NavLink href="https://github.com/PookMook/boomer-css" target="_blank" rel="noopener noreferrer">GitHub</NavLink>
-      </NavLinks>
+    <nav className={NavContainer()}>
+      <Link href="/" className={NavLink({ home: true })}>BoomerCSS</Link>
+      <div className={MarqueeWrapper()}>
+        <p className={MarqueeText()}>Zero Runtime CSS-in-TS Solution</p>
+      </div>
+      <div className={NavLinks()}>
+        <Link href="/why" className={NavLink()}>Why</Link>
+        <Link href="/getting-started" className={NavLink()}>Getting Started</Link>
+        <Link href="/docs" className={NavLink()}>Documentation</Link>
+        <Link href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</Link>
+      </div>
       <Popover.Root>
         <Popover.Trigger asChild>
-          <MenuButton aria-label="Open menu">
+          <button className={MenuButton()} aria-label="Open menu">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 12h18M3 6h18M3 18h18" />
             </svg>
-          </MenuButton>
+          </button>
         </Popover.Trigger>
         <Popover.Content className={PopoverContent()}>
-          <NavLink href="/why">Why</NavLink>
-          <NavLink href="/getting-started">Getting Started</NavLink>
-          <NavLink href="/docs">Documentation</NavLink>
-          <NavLink href="https://github.com/PookMook/boomer-css" target="_blank" rel="noopener noreferrer">GitHub</NavLink>
+          <Link href="/why" className={NavLink()}>Why</Link>
+          <Link href="/getting-started" className={NavLink()}>Getting Started</Link>
+          <Link href="/docs" className={NavLink()}>Documentation</Link>
+          <Link href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</Link>
         </Popover.Content>
       </Popover.Root>
-    </NavContainer>
+    </nav>
   )
 }
