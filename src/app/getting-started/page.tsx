@@ -3,19 +3,7 @@ import { styled, v } from '@/libs/boomer' with { type: 'macro' }
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
 import { Container } from '@/css/layout'
 import { PageTitle } from '@/css/typography'
-
-const CodeBlock = styled('pre', {
-  base: {
-    padding: '1.5rem',
-    borderRadius: '0.5rem',
-    backgroundColor: v('colors.backgroundCode'),
-    color: v('colors.textCode'),
-    overflow: 'auto',
-    fontSize: '0.875rem',
-    lineHeight: '1.7',
-    margin: '1rem 0'
-  }
-}, { name: 'CodeBlock' })
+import { CodeBlock } from '@/css/code'
 
 export default function GettingStartedPage() {
   return (

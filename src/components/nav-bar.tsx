@@ -22,7 +22,7 @@ const NavLinks = css({
     display: 'none',
     gap: '2rem',
     query: {
-      [q('tablet/media (min-width: 768px)')]: {
+      [q('tabletAndUp/media (min-width: 768px)')]: {
         display: 'flex'
       }
     }
@@ -92,7 +92,7 @@ const MarqueeWrapper = css({
       background: `linear-gradient(to right, ${v('colors.background')}, transparent)`
     },
     query: {
-      [q('tablet/media (min-width: 768px)')]: {
+      [q('tabletAndUp/media (min-width: 768px)')]: {
         display: 'flex'
       }
     }
@@ -108,7 +108,7 @@ const MenuButton = css({
     border: 'none',
     cursor: 'pointer',
     query: {
-      [q('tablet/media (min-width: 768px)')]: {
+      [q('tabletAndUp/media (min-width: 768px)')]: {
         display: 'none'
       }
     }

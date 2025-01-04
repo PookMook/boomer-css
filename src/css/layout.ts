@@ -3,14 +3,23 @@ import { styled, q, v } from '@/libs/boomer' with { type: 'macro' }
 
 export const Container = styled('div', {
   base: {
-    gridColumn: '2 / 3',
     maxWidth: '100vw',
-    paddingBlock: v('spacing.lg')
+    width: '100%',
+    paddingBlock: v('spacing.lg'),
+    paddingInline: v('spacing.lg'),
+    query: {
+      [q('desktopAndUp/media (min-width: 1024px)')]: {
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '0'
+      },
+    },
   },
   variants: {
     spread: {
         full:{
-            gridColumn: '1 / -1',
+            maxWidth: '100vw',
+            width: '100%'
         }
     },
     padding: {
@@ -37,12 +46,27 @@ export const Container = styled('div', {
                 marginTop: '2rem',
                 marginBottom: '1rem',
                 color: v('colors.text')
-              },
-              '& p': {
+            },
+            '& p': {
                 marginBottom: '1rem',
                 color: v('colors.textSecondary'),
                 lineHeight: 1.7
-              }
+            },
+            '& ul, & ol': {
+                marginBottom: '1rem',
+                paddingLeft: '1.5rem',
+                color: v('colors.textSecondary'),
+                lineHeight: 1.7,
+            },
+            '& li': {
+                marginBottom: '0.5rem'
+            },
+            '& ul': {
+                listStyleType: 'disc'
+            },
+            '& ol': {
+                listStyleType: 'decimal'
+            }
         }
     }
   },
@@ -54,14 +78,14 @@ export const Grid = styled('div', {
     width: '100%',
     gap: '1rem',
         query: {
-          [q('tablet/media (min-width: 768px)')]: {
+          [q('tabletAndDown/media (max-width: 1023px)')]: {
             gap: '2rem',
             gridTemplateColumns: 'repeat(1, 1fr)'
           },
-          [q('desktop/media (min-width: 1024px)')]: {
+          [q('desktopAndUp/media (min-width: 1024px)')]: {
             gridTemplateColumns: 'repeat(2, 1fr)'
           },
-          [q('large/media (min-width: 1200px)')]: {
+          [q('largeAndUp/media (min-width: 1200px)')]: {
             gridTemplateColumns: 'repeat(3, 1fr)'
           }
         }
