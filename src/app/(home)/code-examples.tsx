@@ -25,7 +25,7 @@ const TabsContainer = styled('div', {
       display: 'none'
     },
     query: {
-      [q('tablet/media (min-width: 768px)')]: {
+      [q('tabletAndUp/media (min-width: 768px)')]: {
         justifyContent: 'center'
       }
     }
