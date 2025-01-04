@@ -10,6 +10,7 @@ export const CodeBlock = styled('pre', {
     overflow: 'auto',
     fontSize: '0.875rem',
     lineHeight: '1.7',
+    whiteSpace: 'pre-wrap',
     margin: '1rem 0'
   },
   variants: {

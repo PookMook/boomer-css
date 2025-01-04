@@ -112,7 +112,7 @@ export const Text = styled('p', {
       true: {
         fontSize: '0.875rem',
         query: {
-          [q('tablet/media (min-width: 768px)')]: {
+          [q('tabletAndUp/media (min-width: 768px)')]: {
             fontSize: '1rem'
           }
         }
