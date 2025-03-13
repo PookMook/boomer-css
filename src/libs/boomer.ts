@@ -1,10 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 
-import React from 'react';
+import React, { type ElementType, type ComponentProps, type ComponentRef } from 'react';
 import type { queries, themeTypeForV} from '../css/theme';
 import type { MacroContext } from '@parcel/macros'
 
 import fs from 'fs';
+
+const preferCSSFiles = false
+
+const config = process.env.NODE_ENV === 'production' && preferCSSFiles ? {
+	configFile: 'app/css/config.css',
+	globalFile: 'app/css/global.css',
+	componentsFile: 'app/css/components.css',
+	aphlaPrefix: 'bmr-'
+} : {
+	configFile: undefined,
+	globalFile: undefined,
+	componentsFile: undefined,
+	aphlaPrefix: 'bmr-'
+}
 
 function hash(string: string) {
 	let hash = 0,
@@ -15,7 +29,7 @@ function hash(string: string) {
 		hash = ((hash << 5) - hash) + chr;
 		hash |= 0; // Convert to 32bit integer
 	}
-	const hashStr = hash.toString(36);
+	const hashStr = config.aphlaPrefix + hash.toString(36);
 	return hashStr.startsWith('-') ? hashStr.slice(1) : hashStr;
 }
 
@@ -23,6 +37,13 @@ function hash(string: string) {
 type ExtraCSSDeclaration = 
  | 'WebkitFontSmoothing'
  | 'MozOsxFontSmoothing'
+ | 'WebkitTextSizeAdjust'
+ | 'WebkitFontSmoothing'
+ | 'MozOsxFontSmoothing'
+ | 'WebkitTextSizeAdjust'
+ | 'WebkitFontSmoothing'
+ | 'MozOsxFontSmoothing'
+ | 'WebkitTextSizeAdjust'
 
 type CSSValue = string | number | Token
 type CSSPayload = Partial<Record<keyof CSSStyleDeclaration | ExtraCSSDeclaration, CSSValue>>
@@ -50,7 +71,7 @@ function jsNameToCssName(name: string) {
 }
 
 function buildPayload(payload: CSSPayload) {
-	return `${Object.entries(payload).filter(([property]) => { return property !== 'media' && !property.includes('&') }).map(([property, value]) => {
+	return `${Object.entries(payload).filter(([property]) => { return property !== 'query' && !property.includes('&') }).map(([property, value]) => {
 		return `${jsNameToCssName(property)}: ${value && typeof value === "object" && 'variable' in value
 			? value.variable : value}`
 	}).join(';')}`
@@ -106,27 +127,39 @@ export function css<TVariants extends Variants>(
 		}).join('')}}`
 
 	}
-	const className = `${options.name ? options.name+'-' : ''}${hash(cssOut)}`
+	const className = `${options.name ? options.name+'.' : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
 	if (this?.addAsset) {
-		this.addAsset({
-			type: 'css',
-			content: cssOut
-		});
+		if(config.componentsFile){
+			const currentStyles = fs.readFileSync(config.componentsFile, 'utf8')
+			//if cssOut is not in currentStyles, add it
+			if(!currentStyles.includes(cssOut)){
+				fs.writeFileSync(config.componentsFile, currentStyles + cssOut)
+			}
+		}
+		else{
+			this.addAsset({
+				type: 'css',
+				content: cssOut
+			});
+		}
 	}
 	else {
 		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
 	}
 
 	return new Function('variants',
-		'if(!variants)return "' + className + '" ;return `' + className + ' ${Object.entries(variants).map(([key, value]) => {' +
+		'if(!variants)return "' + className.replace('.',' ') + '" ;return `' + className.replace('.',' ') + ' ${Object.entries(variants).map(([key, value]) => {' +
 		'const processedValue = typeof value === "boolean" ? String(value) : value;' +
 		'return `__${key}_${processedValue}`;' +
 		'}).join(" ")}`'
 	) as ReturnType<typeof css>;
 }
 
-export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants extends Variants>(
+export function styled<
+	TTag extends ElementType,
+	TVariants extends Variants
+>(
 	this: MacroContext | void,
 	tag: TTag,
 	styles: {
@@ -140,13 +173,15 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 		: never
 	},
 	options: { name?: string } = {}
-): React.ForwardRefExoticComponent<React.PropsWithoutRef<React.ComponentPropsWithoutRef<TTag> & 
-	(TVariants extends Record<string, unknown>
-		? Partial<{ [TKey in keyof TVariants as `$${string & TKey}`]: keyof TVariants[TKey] 
-		| (TVariants[TKey] extends { true: unknown } ? boolean : never)
-		| (TVariants[TKey] extends { false: unknown } ? boolean : never) }
-		>
-		: {})> & React.RefAttributes<React.ElementRef<TTag>>> {
+): React.ForwardRefExoticComponent<
+	React.PropsWithoutRef<ComponentProps<TTag> & 
+		(TVariants extends Record<string, unknown>
+			? Partial<{ [TKey in keyof TVariants as `$${string & TKey}`]: keyof TVariants[TKey] 
+			| (TVariants[TKey] extends { true: unknown } ? boolean : never)
+			| (TVariants[TKey] extends { false: unknown } ? boolean : never) }
+			>
+			: {})> & React.RefAttributes<ComponentRef<TTag>>
+> {
 	let cssOut = `@layer base {${styles.base ? buildCSS(styles.base, '.&') : ''}}`
 	if (styles.variants) {
 		cssOut += `@layer variants {${Object.keys(styles.variants).map(
@@ -166,18 +201,28 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 		}).join('')}}`
 
 	}
-	const className = `${options.name ? options.name+'-' : ''}${hash(cssOut)}`
+	const className = `${options.name ? options.name+'.' : ''}${hash(cssOut)}`
 	cssOut = cssOut.replaceAll('&', className)
 
 	if (this?.addAsset) {
-		 this.addAsset({
-			type: 'css',
-			content: cssOut
-		});
+		if(config.componentsFile){
+			const currentStyles = fs.readFileSync(config.componentsFile, 'utf8')
+			//if cssOut is not in currentStyles, add it
+			if(!currentStyles.includes(cssOut)){
+				fs.writeFileSync(config.componentsFile, currentStyles + cssOut)
+			}
+		}
+		else{
+			this.addAsset({
+				type: 'css',
+				content: cssOut
+			});
+		}
 	} else {
 		throw new Error('You need to make sure to import styled function via `with {type: \'macro\'}`')
 	}
 
+	// @ts-expect-error - This is a macro, so we can't use the return type of the function
 	return new Function('props', `const {className: userClassName, ...rest} = props;
 		const variantClassNames = Object.entries(rest)
 			.filter(([key]) => key.startsWith('$'))
@@ -186,8 +231,8 @@ export function styled<TTag extends keyof JSX.IntrinsicElements, TVariants exten
 				delete rest[key]
 				return variantName
 			}).join(' ');
-		const generatedClassName = '${className}' + (variantClassNames ? ' '+ variantClassNames : '') + (userClassName ? ' '+ userClassName : '');
-		const Element = React.createElement('${tag}', {
+		const generatedClassName = '${className.replaceAll('.', ' ')}' + (variantClassNames ? ' '+ variantClassNames : '') + (userClassName ? ' '+ userClassName : '');
+		const Element = React.createElement('${String(tag)}', {
 			className: generatedClassName,
 			...rest,
 		});
@@ -202,18 +247,21 @@ export function globalCSS(this: MacroContext | void,
 	resets: Record<string, CSSPayload>) {
 	let cssOut = '@layer reset{'
 	for(const reset in resets){
-		cssOut += `${reset} {${buildCSS(resets[reset]!)}}`
-	}
+		cssOut += `${reset} {${buildCSS(resets[reset]!)}}`	}
 	cssOut += '}'
 		
 	if (this?.addAsset) {
-		// If you prefer to not write the css to a file, uncomment this line
-		 this.addAsset({
-			type: 'css',
-			content: cssOut
-		});
+
+		if(config.globalFile){
+			fs.writeFileSync(config.globalFile, cssOut)
+		}
+		else{
+			this.addAsset({
+				type: 'css',
+				content: cssOut
+			});
+		}
 		
-		//fs.writeFileSync('src/css/global.css', cssOut)
 	}
 	else {
 		throw new Error('You need to make sure to import css function via `with {type: \'macro\'}`')
@@ -294,13 +342,17 @@ export function createConfig
 	cssBaseOut += '}}'
 
 	if (this?.addAsset) {
-		// If you prefer to not write the css to a file, uncomment this line
-		this.addAsset({
-			type: 'css',
-			content: cssBaseOut + cssOut
-		}); 
 
-		//fs.writeFileSync('src/css/config.css', cssBaseOut + cssOut)
+		if(config.configFile){
+			fs.writeFileSync(config.configFile, cssBaseOut + cssOut)
+		}
+		else{
+			this.addAsset({
+				type: 'css',
+				content: cssBaseOut + cssOut
+			}); 
+		}	
+
 	}
 	else {
 		throw new Error('You need to make sure to import makeConfig function via `with {type: \'macro\'}`')
@@ -349,9 +401,7 @@ export function v(token: Path<typeof themeTypeForV>, fallback?: string){
 
 export function q<K extends keyof typeof queries>(mediaQuery: K extends keyof typeof queries ? `${K}/${(typeof queries)[K]}` : never) {
 	return `@${mediaQuery.split('/')[1]}`
-}
-
-export function createTheme(this: MacroContext | void, name: string, theme: Partial<{
+}export function createTheme(this: MacroContext | void, name: string, theme: Partial<{
   [K in keyof typeof themeTypeForV]: Partial<(typeof themeTypeForV)[K]>
 }>) {
   let cssOut = `.${name} {`
@@ -375,3 +425,4 @@ export function createTheme(this: MacroContext | void, name: string, theme: Part
 
   return name
 }
+
