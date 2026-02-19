@@ -1,7 +1,5 @@
-'use client'
-
 import * as React from 'react'
-import Link from 'next/link'
+import { Link } from '@tanstack/react-router'
 import { v, keyframes, q, css } from '@/libs/boomer' with { type: 'macro' }
 import * as Popover from '@radix-ui/react-popover'
 
@@ -130,15 +128,15 @@ const PopoverContent = css({
 export function NavBar() {
   return (
     <nav className={NavContainer()}>
-      <Link href="/" className={NavLink({ home: true })}>BoomerCSS</Link>
+      <Link to="/" className={NavLink({ home: true })}>BoomerCSS</Link>
       <div className={MarqueeWrapper()}>
-        <p className={MarqueeText()}>Zero Runtime CSS-in-TS Solution</p>
+        <p className={MarqueeText()}>Zero Runtime TypeScript CSS Preprocessor</p>
       </div>
       <div className={NavLinks()}>
-        <Link href="/why" className={NavLink()}>Why</Link>
-        <Link href="/getting-started" className={NavLink()}>Getting Started</Link>
-        <Link href="/docs" className={NavLink()}>Documentation</Link>
-        <Link href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</Link>
+        <Link to="/why" className={NavLink()}>Why</Link>
+        <Link to="/getting-started" className={NavLink()}>Getting Started</Link>
+        <Link to="/docs" className={NavLink()}>Documentation</Link>
+        <a href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
       <Popover.Root>
         <Popover.Trigger asChild>
@@ -149,10 +147,10 @@ export function NavBar() {
           </button>
         </Popover.Trigger>
         <Popover.Content className={PopoverContent()}>
-          <Link href="/why" className={NavLink()}>Why</Link>
-          <Link href="/getting-started" className={NavLink()}>Getting Started</Link>
-          <Link href="/docs" className={NavLink()}>Documentation</Link>
-          <Link href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</Link>
+          <Link to="/why" className={NavLink()}>Why</Link>
+          <Link to="/getting-started" className={NavLink()}>Getting Started</Link>
+          <Link to="/docs" className={NavLink()}>Documentation</Link>
+          <a href="https://github.com/PookMook/boomer-css" className={NavLink()} target="_blank" rel="noopener noreferrer">GitHub</a>
         </Popover.Content>
       </Popover.Root>
     </nav>

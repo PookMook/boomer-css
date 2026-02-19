@@ -14,8 +14,8 @@ const FeatureCard = styled('div', {
 
 const features = [
   {
-    title: 'Zero Runtime',
-    description: 'All CSS is generated at build time with no runtime overhead or style calculations.'
+    title: 'Zero Runtime Everywhere',
+    description: 'All CSS is generated at build time with zero runtime style injection, zero runtime parsing, and zero runtime style calculations.'
   },
   {
     title: 'Type-Safe Styling',
@@ -52,4 +52,4 @@ export function Features() {
         </Grid>
       </Container>
   )
-} 
+}

@@ -13,7 +13,7 @@ Whenever you import a function from `boomer.ts`, you *need* to use `import { css
 
 ## Examples
 
-This repo is a nextjs example. You can fork this repo and get started or inspire yourself from the setup for your own project. More examples will be available later, as well as ready made configuration to use in your projects.
+This repo is a TanStack Start example. You can fork this repo and get started or inspire yourself from the setup for your own project. More examples will be available later, as well as ready made configuration to use in your projects.
 
 ## Dev 
 
@@ -24,13 +24,13 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `src/routes/index.tsx` and other files under `src/routes`. The page auto-updates as you edit the file.
 
 WIP Documentation below
 
 # BoomerCSS
 
-BoomerCSS is a zero-runtime CSS-in-TS styling solution that generates CSS at build time using Parcel macros. It provides a type-safe way to author CSS with themes, variants, and responsive designs.
+BoomerCSS is a TypeScript CSS preprocessor with zero runtime everywhere, generating static CSS at build time using Parcel macros and provides a type-safe way to author CSS with themes, variants, and responsive designs.
 
 ## Core Concepts
 
@@ -200,10 +200,10 @@ BoomerCSS provides TypeScript types for:
 
 ## Performance Benefits
 
-- Zero runtime JavaScript for styles
+- Zero runtime style logic in JavaScript
 - CSS is generated at build time
 - Styles are loaded via standard CSS files
-- No style calculation or injection at runtime
+- No style calculation or injection at runtime, anywhere in the app
 - Optimal browser caching of CSS
 
 ## Best Practices

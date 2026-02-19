@@ -48,6 +48,10 @@ export const { queries, themeTypeForV } = createConfig({
         xl: '2.5rem',
         '2xl': '3.5rem',
       },
+      fontFamilies: {
+        body: 'Inter, sans-serif',
+        neon: '"Tilt Neon", "Inter", sans-serif',
+      },
       lineHeights: {
         tight: '1.2',
         base: '1.5',
@@ -147,9 +151,10 @@ globalCSS({
     lineHeight: 1.5,
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmoothing: 'grayscale',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: v('fontFamilies.body'),
     color: v('colors.text'),
     overflowY: 'scroll',
+    isolation: 'isolate',
   },
   html:{
     fontSize: v('fontSizes.defaultFontSize'),
@@ -164,9 +169,7 @@ globalCSS({
   'p, h1, h2, h3, h4, h5, h6': {
     overflowWrap: 'break-word',
   },
-  '#root, #__next': {
-    isolation: 'isolate',
-  }
+  
 })
 
 export const Main = styled('main', {

@@ -1,10 +1,15 @@
-import React from 'react'
+import * as React from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
-import { Container} from '@/css/layout'
+import { Container } from '@/css/layout'
 import { CodeBlock } from '@/css/code'
 import { PageTitle } from '@/css/typography'
 
-export default function DocumentationPage() {
+export const Route = createFileRoute('/docs')({
+  component: DocumentationPage,
+})
+
+function DocumentationPage() {
   return (
     <Container $typographic="true">
       <PageTitle>Documentation</PageTitle>
@@ -12,8 +17,8 @@ export default function DocumentationPage() {
         
         <h2>Core Concepts</h2>
         <p>
-          boomerCSS is a zero-runtime CSS-in-TS solution that generates all styles at build time using Parcel macros. 
-          It provides a type-safe way to write CSS with support for themes, variants, and responsive designs.
+          boomerCSS is a TypeScript CSS preprocessor that runs at build time and keeps runtime style work at zero. 
+          It provides a type-safe way to write CSS with support for themes, variants, responsive designs, and a zero-runtime output path everywhere.
         </p>
 
 
@@ -268,10 +273,10 @@ const Box = styled('div', {
   'body': {
     backgroundColor: v('colors.background'),
     color: v('colors.text'),
-    fontFamily: 'system-ui'
+    fontFamily: v('fontFamilies.body')
   }
 })`}</code>
         </CodeBlock>
     </Container>
   )
-} 
+}
