@@ -1,11 +1,15 @@
-import React from 'react'
-import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import * as React from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
 import { Container } from '@/css/layout'
 import { PageTitle } from '@/css/typography'
 import { CodeBlock } from '@/css/code'
 
-export default function GettingStartedPage() {
+export const Route = createFileRoute('/getting-started')({
+  component: GettingStartedPage,
+})
+
+function GettingStartedPage() {
   return (
     <Container $typographic="true">
       <PageTitle>Getting Started with BoomerCSS</PageTitle>

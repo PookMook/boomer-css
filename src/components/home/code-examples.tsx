@@ -1,5 +1,3 @@
-'use client'
-
 import * as React from 'react'
 import { styled, v, q } from '@/libs/boomer' with { type: 'macro' }
 import { CodeBlock } from '@/css/code'
@@ -147,7 +145,6 @@ export const { theme } = createConfig({
 })
 
 // Global styles
-globalCSS({
   '*': {
     margin: 0,
     padding: 0,
@@ -203,4 +200,4 @@ export function CodeExamples() {
         </CodeBlock>
       </Container>
   )
-} 
+}

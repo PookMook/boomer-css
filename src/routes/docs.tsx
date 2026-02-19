@@ -1,10 +1,15 @@
-import React from 'react'
+import * as React from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { AlphaDisclaimer } from '@/components/alpha-disclaimer'
-import { Container} from '@/css/layout'
+import { Container } from '@/css/layout'
 import { CodeBlock } from '@/css/code'
 import { PageTitle } from '@/css/typography'
 
-export default function DocumentationPage() {
+export const Route = createFileRoute('/docs')({
+  component: DocumentationPage,
+})
+
+function DocumentationPage() {
   return (
     <Container $typographic="true">
       <PageTitle>Documentation</PageTitle>
@@ -274,4 +279,4 @@ const Box = styled('div', {
         </CodeBlock>
     </Container>
   )
-} 
+}

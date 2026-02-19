@@ -1,9 +1,13 @@
-import React from 'react'
-import { styled, v } from '@/libs/boomer' with { type: 'macro' }
+import * as React from 'react'
+import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '@/css/layout'
 import { PageTitle } from '@/css/typography'
 
-export default function WhyPage() {
+export const Route = createFileRoute('/why')({
+  component: WhyPage,
+})
+
+function WhyPage() {
   return (
     <Container $typographic="true">
       <PageTitle>Why boomerCSS?</PageTitle>

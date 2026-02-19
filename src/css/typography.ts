@@ -54,7 +54,7 @@ export const Title = styled('h1', {
           },
           [q('dark/media (prefers-color-scheme: dark)')]: {
             color: 'white',
-            fontFamily: 'var(--font-neoneon)',
+            fontFamily: '"Tilt Neon", "Inter", sans-serif',
             letterSpacing: '0.25rem',
             textShadow: `
               0 0 7px #3b82f6,
