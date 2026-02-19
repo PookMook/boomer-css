@@ -17,8 +17,8 @@ function DocumentationPage() {
         
         <h2>Core Concepts</h2>
         <p>
-          boomerCSS is a zero-runtime CSS-in-TS solution that generates all styles at build time using Parcel macros. 
-          It provides a type-safe way to write CSS with support for themes, variants, and responsive designs.
+          boomerCSS is a TypeScript CSS preprocessor that runs at build time and keeps runtime style work at zero. 
+          It provides a type-safe way to write CSS with support for themes, variants, responsive designs, and a zero-runtime output path everywhere.
         </p>
 
 

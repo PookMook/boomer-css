@@ -130,7 +130,7 @@ export function NavBar() {
     <nav className={NavContainer()}>
       <Link to="/" className={NavLink({ home: true })}>BoomerCSS</Link>
       <div className={MarqueeWrapper()}>
-        <p className={MarqueeText()}>Zero Runtime CSS-in-TS Solution</p>
+        <p className={MarqueeText()}>Zero Runtime TypeScript CSS Preprocessor</p>
       </div>
       <div className={NavLinks()}>
         <Link to="/why" className={NavLink()}>Why</Link>

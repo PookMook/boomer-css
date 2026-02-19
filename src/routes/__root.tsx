@@ -21,10 +21,10 @@ export const Route = createRootRoute({
       },
       {
         name: 'description',
-        content: 'A zero-runtime CSS-in-TS styling solution that generates CSS at build time using Parcel macros.',
+        content: 'A TypeScript CSS preprocessor with zero runtime everywhere, generating static CSS at build time using Parcel macros.',
       },
       {
-        title: 'BoomerCSS - Zero Runtime CSS-in-TS Solution',
+        title: 'BoomerCSS - Zero Runtime TypeScript CSS Preprocessor',
       },
     ],
     links: [

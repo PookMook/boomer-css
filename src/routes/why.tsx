@@ -13,12 +13,12 @@ function WhyPage() {
       <PageTitle>Why boomerCSS?</PageTitle>
         <h2>Embracing the Cascade</h2>
         <p>
-          boomerCSS was created to bring back the power of CSS's cascade while maintaining the benefits of modern CSS-in-JS solutions. Unlike other styling libraries that fight against the cascade, boomerCSS works with it to create more maintainable and performant stylesheets.
+          boomerCSS was created to bring back the power of CSS's cascade while keeping the developer ergonomics of a modern TypeScript CSS preprocessor. Unlike styling tools that fight against the cascade, boomerCSS works with it to create more maintainable and performant stylesheets.
         </p>
 
         <h2>Zero Runtime Overhead</h2>
         <p>
-          Using macro functions, boomerCSS generates all styles at build time, resulting in zero runtime overhead. This means your styles are compiled into static CSS files, eliminating the performance costs typically associated with CSS-in-JS libraries.
+          Using macro functions, boomerCSS generates all styles at build time, resulting in zero runtime overhead everywhere styles are used. Your styles are compiled into static CSS files, removing runtime style parsing, runtime style injection, and runtime style calculations from the client.
         </p>
 
         <h2>Type-Safe Styling</h2>
