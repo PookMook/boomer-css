@@ -273,7 +273,7 @@ const Box = styled('div', {
   'body': {
     backgroundColor: v('colors.background'),
     color: v('colors.text'),
-    fontFamily: 'system-ui'
+    fontFamily: v('fontFamilies.body')
   }
 })`}</code>
         </CodeBlock>

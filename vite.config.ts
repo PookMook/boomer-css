@@ -15,5 +15,31 @@ export default defineConfig({
     nitro(),
     UnpluginParcelMacros.vite(),
     viteReact(),
+    {
+      name: 'strip-macro-sourcemaps',
+      enforce: 'post',
+      transform(code, id) {
+        const isSourceFile = /\.[jt]sx?$/.test(id)
+        const hasMacroOutput = code.includes('.macro-')
+
+        if (!isSourceFile || !hasMacroOutput) {
+          return null
+        }
+
+        // unplugin-parcel-macros can emit sourcemaps that reference ephemeral
+        // generated files. Returning an empty map prevents Vite from trying to
+        // hydrate missing sources while preserving transformed output.
+        return {
+          code,
+          map: {
+            version: 3,
+            names: [],
+            sources: [],
+            sourcesContent: [],
+            mappings: '',
+          },
+        }
+      },
+    },
   ],
 })

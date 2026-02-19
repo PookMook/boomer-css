@@ -124,7 +124,7 @@ const Button = styled('button', {
 // Usage:
 // <Button $variant="primary" $size="small">Click me</Button>`,
 
-  theme: `import { createConfig, globalCSS } from '@/libs/boomer' with { type: 'macro' }
+  theme: `import { createConfig, globalCSS, v } from '@/libs/boomer' with { type: 'macro' }
 
 // Theme configuration
 export const { theme } = createConfig({
@@ -133,6 +133,9 @@ export const { theme } = createConfig({
       colors: {
         primary: '#3b82f6',
         secondary: '#8b5cf6'
+      },
+      fontFamilies: {
+        body: 'system-ui, sans-serif'
       }
     },
     dark: {
@@ -145,13 +148,14 @@ export const { theme } = createConfig({
 })
 
 // Global styles
+globalCSS({
   '*': {
     margin: 0,
     padding: 0,
     boxSizing: 'border-box'
   },
   'body': {
-    fontFamily: 'system-ui',
+    fontFamily: v('fontFamilies.body'),
     lineHeight: 1.5
   }
 })

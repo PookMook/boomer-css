@@ -44,6 +44,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
+  notFoundComponent: NotFoundComponent,
 })
 
 function RootComponent() {
@@ -68,5 +69,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function NotFoundComponent() {
+  return (
+    <Main>
+      <p>Page not found.</p>
+    </Main>
   )
 }
