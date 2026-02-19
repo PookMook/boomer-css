@@ -6,8 +6,8 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
-import { NavBar } from '@/components/nav-bar'
 import { Main } from '@/css/theme'
+import { NavBar } from '@/components/nav-bar'
 
 export const Route = createRootRoute({
   head: () => ({
