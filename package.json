@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:vercel": "NITRO_PRESET=vercel vite build",
+    "build:vercel": "NITRO_PRESET=node-server vite build",
     "vercel-build": "pnpm build:vercel",
     "start": "vite preview",
     "preview": "vite preview"
