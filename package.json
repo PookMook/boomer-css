@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:vercel": "vite build",
+    "vercel-build": "pnpm build:vercel",
     "start": "vite preview",
     "preview": "vite preview"
   },
@@ -18,13 +20,14 @@
   },
   "devDependencies": {
     "@parcel/macros": "^2.13.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "@types/node": "^20.17.11",
+    "@types/node": "^25.3.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "nitro": "npm:nitro-nightly@3.0.1-20260219-081345-4df7aab2",
     "typescript": "^5.7.2",
     "unplugin-parcel-macros": "^0.0.3",
-    "vite": "^6.0.11",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.1.1"
   }
 }
